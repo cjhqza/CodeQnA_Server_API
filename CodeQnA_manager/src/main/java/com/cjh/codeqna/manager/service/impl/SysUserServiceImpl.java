@@ -1,5 +1,6 @@
 package com.cjh.codeqna.manager.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.cjh.codeqna.common.exception.CodeQnAException;
 import com.cjh.codeqna.manager.mapper.SysUserMapper;
@@ -31,12 +32,18 @@ public class SysUserServiceImpl implements SysUserService {
     // 管理员用户登录
     @Override
     public LoginVo login(LoginDto loginDto) {
-        // 获取管理员用户输入的验证码以及实际的验证码
-        // String captcha = loginDto.getCaptcha();
-        // String codeKey = loginDto.getCodeKey();
-        // 从redis中获取存储的验证码
-
-
+        // 获取管理员用户输入的验证码以及存储在redis中的codeKey
+        String captcha = loginDto.getCaptcha();
+        String codeKey = loginDto.getCodeKey();
+        // 根据获得的codeKey从redis中查询获取存储的验证码
+        String codeValue = redisTemplate.opsForValue().get("manager-user:validate" + codeKey);
+        // 校验输入的验证码和实际的验证码，不忽略大小写
+        // 如果不一致
+        if (StrUtil.isEmpty(codeValue) || !StrUtil.equals(codeValue, captcha)) {
+            throw new CodeQnAException(ResultCodeEnum.VALIDATECODE_ERROR);
+        }
+        // 如果一致，可删除redis对应存储的验证码
+        redisTemplate.delete("manager-user:validate" + codeKey);
         // 获取输入的管理员用户名
         String userName = loginDto.getUserName();
         // 根据管理员用户名从系统管理员用户表里查询获取得到其实体类
