@@ -24,7 +24,7 @@ public class Knife4jConfig {
     }
 
     /***
-     * @description 自定义接口信息
+     * @description 自定义管理员用户接口信息
      */
     @Bean
     public OpenAPI customOpenAPI() {
@@ -33,7 +33,7 @@ public class Knife4jConfig {
                 .info(new Info()
                         .title("CodeQnA后端API接口文档")
                         .version("1.0")
-                        .description("尚品甑选API接口文档")
-                        .contact(new Contact().name("atguigu"))); // 设定作者
+                        .description("后台管理系统API接口文档")
+                        .contact(new Contact().name("cjh"))); // 设定作者
     }
 }
