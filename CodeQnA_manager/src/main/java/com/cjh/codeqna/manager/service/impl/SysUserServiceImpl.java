@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: cjh
- * @Description: 系统用户服务实现类
+ * @Description: 系统用户服务接口实现类
  * @Create: 2024-12-25 17:24
  */
 @Service

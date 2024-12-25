@@ -1,17 +1,16 @@
 package com.cjh.codeqna.manager.controller;
 
 import com.cjh.codeqna.manager.service.SysUserService;
+import com.cjh.codeqna.manager.service.ValidateCodeService;
 import com.cjh.codeqna.model.dto.system.LoginDto;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.cjh.codeqna.model.vo.system.LoginVo;
+import com.cjh.codeqna.model.vo.system.ValidateCodeVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: cjh
@@ -24,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class IndexController {
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private ValidateCodeService validateCodeService;
 
     // 管理员用户登录
     @Operation(summary = "登录接口")
@@ -31,5 +32,12 @@ public class IndexController {
     public Result login(@RequestBody LoginDto loginDto) {
         LoginVo loginVo = sysUserService.login(loginDto);
         return Result.build(loginVo, ResultCodeEnum.SUCCESS);
+    }
+
+    // 生成图片验证码
+    @GetMapping(value = "generateValidateCode")
+    public Result generateValidateCode() {
+        ValidateCodeVo validateCodeVo = validateCodeService.generateValidateCode();
+        return Result.build(validateCodeVo, ResultCodeEnum.SUCCESS);
     }
 }
