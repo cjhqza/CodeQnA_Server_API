@@ -73,4 +73,12 @@ public class SysUserServiceImpl implements SysUserService {
         loginVo.setToken(token);
         return loginVo;
     }
+
+    // 根据token查询redis获取管理员用户信息
+    @Override
+    public SysUser getSysUserInfo(String token) {
+        // 注意获取的value此前是以JSON格式存储，需要进行转换
+        String sysUserJSON = redisTemplate.opsForValue().get("manager-user:login" + token);
+        return JSON.parseObject(sysUserJSON, SysUser.class);
+    }
 }

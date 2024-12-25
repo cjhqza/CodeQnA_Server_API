@@ -1,6 +1,7 @@
 package com.cjh.codeqna.manager.service;
 
 import com.cjh.codeqna.model.dto.system.LoginDto;
+import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.system.LoginVo;
 
 /**
@@ -11,4 +12,7 @@ import com.cjh.codeqna.model.vo.system.LoginVo;
 public interface SysUserService {
     // 管理员用户登录
     LoginVo login(LoginDto loginDto);
+
+    // 根据token查询redis获取管理员用户信息
+    SysUser getSysUserInfo(String token);
 }

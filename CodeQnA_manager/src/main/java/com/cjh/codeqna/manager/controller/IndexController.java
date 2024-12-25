@@ -3,6 +3,7 @@ package com.cjh.codeqna.manager.controller;
 import com.cjh.codeqna.manager.service.SysUserService;
 import com.cjh.codeqna.manager.service.ValidateCodeService;
 import com.cjh.codeqna.model.dto.system.LoginDto;
+import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.cjh.codeqna.model.vo.system.LoginVo;
@@ -35,9 +36,21 @@ public class IndexController {
     }
 
     // 生成图片验证码
+    @Operation(summary = "验证码接口")
     @GetMapping(value = "generateValidateCode")
     public Result generateValidateCode() {
         ValidateCodeVo validateCodeVo = validateCodeService.generateValidateCode();
         return Result.build(validateCodeVo, ResultCodeEnum.SUCCESS);
     }
+
+    // 获取当前管理员用户的登录信息
+    @Operation(summary = "管理员用户信息接口")
+    @GetMapping(value = "getSysUserInfo")
+    public Result getSysUserInfo(@RequestHeader(name="token") String token) {
+        // 根据token查询redis获取管理员用户信息
+        SysUser sysUser = sysUserService.getSysUserInfo(token);
+        // 返回管理员用户信息
+        return Result.build(sysUser, ResultCodeEnum.SUCCESS);
+    }
+
 }
