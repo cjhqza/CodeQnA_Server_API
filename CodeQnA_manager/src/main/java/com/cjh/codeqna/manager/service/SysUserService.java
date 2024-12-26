@@ -15,4 +15,7 @@ public interface SysUserService {
 
     // 根据token查询redis获取管理员用户信息
     SysUser getSysUserInfo(String token);
+
+    // 管理员用户退出
+    void logout(String token);
 }

@@ -8,9 +8,11 @@ import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.cjh.codeqna.model.vo.system.LoginVo;
 import com.cjh.codeqna.model.vo.system.ValidateCodeVo;
+import com.cjh.codeqna.util.AuthContextUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -46,11 +48,16 @@ public class IndexController {
     // 获取当前管理员用户的登录信息
     @Operation(summary = "管理员用户信息接口")
     @GetMapping(value = "getSysUserInfo")
-    public Result getSysUserInfo(@RequestHeader(name="token") String token) {
-        // 根据token查询redis获取管理员用户信息
-        SysUser sysUser = sysUserService.getSysUserInfo(token);
-        // 返回管理员用户信息
-        return Result.build(sysUser, ResultCodeEnum.SUCCESS);
+    public Result getSysUserInfo() {
+        return Result.build(AuthContextUtil.get(), ResultCodeEnum.SUCCESS);
+    }
+
+    // 管理员用户退出
+    @Operation(summary = "管理员用户退出接口")
+    @GetMapping(value = "logout")
+    public Result logout(@RequestHeader(name="token") String token) {
+        sysUserService.logout(token);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
 }
