@@ -53,7 +53,7 @@ public class LoginAuthInterceptor implements HandlerInterceptor {
         SysUser sysUser = JSON.parseObject(managerUserInfoString, SysUser.class);
         AuthContextUtil.set(sysUser);
         // 把redis管理员用户信息数据将过期时间延期，多增30分钟
-        redisTemplate.expire("user:login" + token, 30, TimeUnit.MINUTES);
+        redisTemplate.expire("manager-user:login" + token, 30, TimeUnit.MINUTES);
         // 放行
         return true;
     }
