@@ -18,9 +18,39 @@
             <if test="roleName != null and roleName != ''">
                 and role_name LIKE CONCAT('%', #{roleName} ,'%')
             </if>
-            AND is_deleted=0
+            AND is_deleted = 0
         </where>
         ORDER BY id DESC
     </select>
 
+    <!--角色添加-->
+    <insert id="add">
+        INSERT INTO sys_role (
+        id,
+        role_name,
+        role_code,
+        description
+        ) VALUES (
+        #{id},
+        #{roleName},
+        #{roleCode},
+        #{description}
+        )
+    </insert>
+
+    <!--角色修改-->
+    <update id="edit">
+        UPDATE sys_role SET
+        <if test="roleName != null and roleName != ''">
+            role_name = #{roleName},
+        </if>
+        <if test="roleCode != null and roleCode != ''">
+            role_code = #{roleCode},
+        </if>
+        <if test="description != null and description != ''">
+            DESCRIPTION = #{description},
+        </if>
+        update_time = NOW()
+        WHERE id = #{id}
+    </update>
 </mapper>

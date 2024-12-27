@@ -23,12 +23,24 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     // 角色列表
     @Override
-    public PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer current, Integer limit) {
+    public PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer pageNum, Integer pageSize) {
         // 设置分页参数
-        PageHelper.startPage(current, limit);
+        PageHelper.startPage(pageNum, pageSize);
         // 查询符合条件的所有角色数据
         List<SysRole> list = sysRoleMapper.findByPage(sysRoleDto);
         // 封装pageInfo对象
         return new PageInfo<>(list);
+    }
+
+    // 角色添加
+    @Override
+    public void addSysRole(SysRole sysRole) {
+        sysRoleMapper.add(sysRole);
+    }
+
+    // 角色修改
+    @Override
+    public void editSysRole(SysRole sysRole) {
+        sysRoleMapper.edit(sysRole);
     }
 }

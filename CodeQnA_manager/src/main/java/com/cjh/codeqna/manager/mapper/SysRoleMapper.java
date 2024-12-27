@@ -15,4 +15,10 @@ import java.util.List;
 public interface SysRoleMapper {
     // 查询符合条件的所有角色数据
     List<SysRole> findByPage(SysRoleDto sysRoleDto);
+
+    // 角色添加
+    void add(SysRole sysRole);
+
+    // 角色修改
+    void edit(SysRole sysRole);
 }

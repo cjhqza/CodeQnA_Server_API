@@ -6,6 +6,7 @@ import com.cjh.codeqna.model.entity.system.SysRole;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +22,27 @@ public class SysRoleController {
     private SysRoleService sysRoleService;
 
     // 角色列表
-    // current： 当前页 limit：每页显示记录数
+    // pageNum：当前页数
+    // pageSize：每页显示记录数
     // SysRoleDto：条件角色名称对象
-    @PostMapping("/findByPage/{current}/{limit}")
-    public Result findByPage(@PathVariable("current") Integer current, @PathVariable("limit") Integer limit, @RequestBody SysRoleDto sysRoleDto) {
+    @PostMapping("/findByPage/{pageNum}/{pageSize}")
+    public Result findByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody SysRoleDto sysRoleDto) {
         // pageHelper插件实现分页
-        PageInfo<SysRole> pageInfo = sysRoleService.findByPage(sysRoleDto, current, limit);
+        PageInfo<SysRole> pageInfo = sysRoleService.findByPage(sysRoleDto, pageNum, pageSize);
         return Result.build(pageInfo, ResultCodeEnum.SUCCESS);
+    }
+
+    // 角色添加
+    @PostMapping(value = "/addSysRole")
+    public Result addSysRole(@RequestBody SysRole sysRole) {
+        sysRoleService.addSysRole(sysRole);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
+    // 角色修改
+    @PutMapping("/editSysRole")
+    public Result editSysRole(@RequestBody SysRole sysRole) {
+        sysRoleService.editSysRole(sysRole);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 }

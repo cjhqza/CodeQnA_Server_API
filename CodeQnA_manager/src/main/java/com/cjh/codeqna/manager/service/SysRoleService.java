@@ -11,5 +11,11 @@ import com.github.pagehelper.PageInfo;
  */
 public interface SysRoleService {
     // 角色列表
-    PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer current, Integer limit);
+    PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer pageNum, Integer pageSize);
+
+    // 角色添加
+    void addSysRole(SysRole sysRole);
+
+    // 角色修改
+    void editSysRole(SysRole sysRole);
 }
