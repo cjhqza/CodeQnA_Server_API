@@ -18,4 +18,7 @@ public interface SysRoleService {
 
     // 角色修改
     void editSysRole(SysRole sysRole);
+
+    // 角色删除
+    void deleteSysRoleById(Long roleId);
 }

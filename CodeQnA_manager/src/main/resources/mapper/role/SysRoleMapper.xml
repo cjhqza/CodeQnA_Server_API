@@ -53,4 +53,11 @@
         update_time = NOW()
         WHERE id = #{id}
     </update>
+
+    <!--角色删除-->
+    <update id="delete">
+        UPDATE sys_role
+        SET is_deleted=1
+        WHERE id=#{roleId}
+    </update>
 </mapper>

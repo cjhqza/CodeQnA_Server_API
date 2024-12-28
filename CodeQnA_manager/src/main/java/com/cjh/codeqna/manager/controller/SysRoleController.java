@@ -45,4 +45,11 @@ public class SysRoleController {
         sysRoleService.editSysRole(sysRole);
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
+
+    // 角色删除
+    @DeleteMapping("/deleteSysRoleById/{roleId}")
+    public Result deleteSysRoleById(@PathVariable("roleId") Long roleId) {
+        sysRoleService.deleteSysRoleById(roleId);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
 }
