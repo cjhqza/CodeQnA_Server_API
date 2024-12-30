@@ -7,6 +7,7 @@
     <sql id="columns">
         id,username userName ,password,name,phone,avatar,description,status,create_time,update_time,is_deleted
     </sql>
+
     <!--根据管理员用户名从系统管理员用户表里查询获取得到其实体类-->
     <select id="findUserByUsername" resultType="com.cjh.codeqna.model.entity.system.SysUser">
         SELECT <include refid="columns"/>
@@ -14,4 +15,81 @@
         WHERE username = #{userName}
         AND is_deleted = 0
     </select>
+
+    <!--管理员列表-->
+    <select id="findByPage" resultType="com.cjh.codeqna.model.entity.system.SysUser">
+        SELECT <include refid="columns"/>
+        FROM sys_user
+        <where>
+            <if test="userName != null and userName != ''">
+                AND userName LIKE CONCAT('%', #{userName}, '%')
+            </if>
+            <if test="beginCreateTime != null and beginCreateTime != ''">
+                AND create_time >= #{beginCreateTime}
+            </if>
+            <if test="endCreateTime != null and endCreateTime != ''">
+                AND create_time &lt;= #{endCreateTime}
+            </if>
+            AND is_deleted = 0
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <!--人员添加-->
+    <insert id="add">
+        INSERT INTO sys_user (
+            id,
+            username,
+            password,
+            name,
+            phone,
+            avatar,
+            description,
+            status
+        ) VALUES (
+            #{id},
+            #{userName},
+            #{password},
+            #{name},
+            #{phone},
+            #{avatar},
+            #{description},
+            #{status}
+        )
+    </insert>
+
+    <!--人员修改-->
+    <update id="edit">
+        UPDATE sys_user SET
+        <if test="userName != null and userName != ''">
+            username = #{userName},
+        </if>
+        <if test="password != null and password != ''">
+            password = #{password},
+        </if>
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        <if test="phone != null and phone != ''">
+            phone = #{phone},
+        </if>
+        <if test="avatar != null and avatar != ''">
+            avatar = #{avatar},
+        </if>
+        <if test="description != null and description != ''">
+            description = #{description},
+        </if>
+        <if test="status != null and status != ''">
+            status = #{status},
+        </if>
+        update_time =  NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!--人员删除-->
+    <delete id="delete">
+        UPDATE sys_user
+        SET is_deleted=1
+        WHERE id = #{sysUserId}
+    </delete>
 </mapper>

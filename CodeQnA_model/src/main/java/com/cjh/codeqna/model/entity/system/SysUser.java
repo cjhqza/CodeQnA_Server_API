@@ -1,5 +1,6 @@
 package com.cjh.codeqna.model.entity.system;
 
+import com.cjh.codeqna.model.entity.base.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -10,7 +11,9 @@ import lombok.Data;
  */
 @Data
 @Schema(description = "系统管理员用户实体类")
-public class SysUser {
+public class SysUser extends BaseEntity {
+    private static final long serialVersionUID = 1L;
+
     @Schema(description = "用户名")
     private String userName;
 

@@ -3,17 +3,23 @@ package com.cjh.codeqna.manager.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.cjh.codeqna.common.exception.CodeQnAException;
+import com.cjh.codeqna.manager.mapper.SysRoleUserMapper;
 import com.cjh.codeqna.manager.mapper.SysUserMapper;
 import com.cjh.codeqna.manager.service.SysUserService;
+import com.cjh.codeqna.model.dto.system.AssignRoleDto;
 import com.cjh.codeqna.model.dto.system.LoginDto;
+import com.cjh.codeqna.model.dto.system.SysUserDto;
 import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.cjh.codeqna.model.vo.system.LoginVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 public class SysUserServiceImpl implements SysUserService {
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysRoleUserMapper sysRoleUserMapper;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -86,5 +94,65 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void logout(String token) {
         redisTemplate.delete("manager-user:login" + token);
+    }
+
+    // 管理员列表
+    @Override
+    public PageInfo<SysUser> findByPage(Integer pageNum, Integer pageSize, SysUserDto sysUserDto) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<SysUser> list = sysUserMapper.findByPage(sysUserDto);
+        for (SysUser sysUser : list) {
+            System.out.println(sysUser.toString());
+        }
+        System.out.println(sysUserDto.toString());
+        return new PageInfo<>(list);
+    }
+
+    // 人员添加
+    @Override
+    public void addSysUser(SysUser sysUser) {
+        // 判断人员名称userName不能重复，只有name可以
+        SysUser dbSysUser = sysUserMapper.findUserByUsername(sysUser.getUserName());
+        // 重复则需要抛出异常
+        if (dbSysUser != null) {
+            throw new CodeQnAException(ResultCodeEnum.USER_NAME_IS_EXISTS);
+        }
+        // 将密码进行加密并保存
+        String md5pw = DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes());
+        sysUser.setPassword(md5pw);
+        // 默认设置status为1：正常
+        sysUser.setStatus(1);
+        // 检查是否有头像地址，没有则设置默认头像地址
+        if (StrUtil.isEmpty(sysUser.getAvatar())) {
+            sysUser.setAvatar("https://oss.aliyuncs.com/aliyun_id_photo_bucket/default_handsome.jpg");
+        }
+        // 将人员信息保存
+        sysUserMapper.add(sysUser);
+    }
+
+    // 人员修改
+    @Override
+    public void editSysUser(SysUser sysUser) {
+        sysUserMapper.edit(sysUser);
+    }
+
+    // 人员删除
+    @Override
+    public void deleteSysUserById(Long sysUserId) {
+        sysUserMapper.delete(sysUserId);
+    }
+
+    // 人员分配角色
+    @Override
+    public void assignRole(AssignRoleDto assignRoleDto) {
+        // 获取当前人员的id
+        Long userId = assignRoleDto.getUserId();
+        // 删除之前人员已分配到的角色
+        sysRoleUserMapper.deleteByUserId(userId);
+        // 再重新分配角色
+        for (Long roleId : assignRoleDto.getRoleIdsList()) {
+            sysRoleUserMapper.assign(userId, roleId);
+        }
+
     }
 }

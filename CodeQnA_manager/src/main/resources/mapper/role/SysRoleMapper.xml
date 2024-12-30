@@ -60,4 +60,12 @@
         SET is_deleted=1
         WHERE id=#{roleId}
     </update>
+
+    <!--查询所有角色-->
+    <select id="findAll" resultMap="sysRoleMap">
+        SELECT <include refid="columns"/>
+        FROM sys_role
+        WHERE is_deleted=0
+    </select>
+
 </mapper>

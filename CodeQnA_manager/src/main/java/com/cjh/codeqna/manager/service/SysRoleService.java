@@ -4,6 +4,8 @@ import com.cjh.codeqna.model.dto.system.SysRoleDto;
 import com.cjh.codeqna.model.entity.system.SysRole;
 import com.github.pagehelper.PageInfo;
 
+import java.util.Map;
+
 /**
  * @Author: cjh
  * @Description: 角色管理服务接口
@@ -21,4 +23,7 @@ public interface SysRoleService {
 
     // 角色删除
     void deleteSysRoleById(Long roleId);
+
+    // 角色集合
+    Map<String, Object> findAllRoles(Long userId);
 }

@@ -10,6 +10,8 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * @Author: cjh
  * @Description: 角色管理控制器
@@ -25,7 +27,7 @@ public class SysRoleController {
     // pageNum：当前页数
     // pageSize：每页显示记录数
     // SysRoleDto：条件角色名称对象
-    @PostMapping("/findByPage/{pageNum}/{pageSize}")
+    @PostMapping(value = "/findByPage/{pageNum}/{pageSize}")
     public Result findByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody SysRoleDto sysRoleDto) {
         // pageHelper插件实现分页
         PageInfo<SysRole> pageInfo = sysRoleService.findByPage(sysRoleDto, pageNum, pageSize);
@@ -40,16 +42,23 @@ public class SysRoleController {
     }
 
     // 角色修改
-    @PutMapping("/editSysRole")
+    @PutMapping(value = "/editSysRole")
     public Result editSysRole(@RequestBody SysRole sysRole) {
         sysRoleService.editSysRole(sysRole);
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
     // 角色删除
-    @DeleteMapping("/deleteSysRoleById/{roleId}")
+    @DeleteMapping(value = "/deleteSysRoleById/{roleId}")
     public Result deleteSysRoleById(@PathVariable("roleId") Long roleId) {
         sysRoleService.deleteSysRoleById(roleId);
         return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
+    // 角色集合
+    @GetMapping(value = "/findAllRoles/{userId}")
+    public Result findAllRoles(@PathVariable("userId") Long userId) {
+        Map<String, Object> map = sysRoleService.findAllRoles(userId);
+        return Result.build(map, ResultCodeEnum.SUCCESS);
     }
 }
