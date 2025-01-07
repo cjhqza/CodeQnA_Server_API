@@ -7,12 +7,16 @@ import com.cjh.codeqna.manager.service.SysMenuService;
 import com.cjh.codeqna.manager.utils.MenuHelper;
 import com.cjh.codeqna.model.dto.system.AssignMenuDto;
 import com.cjh.codeqna.model.entity.system.SysMenu;
+import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
+import com.cjh.codeqna.model.vo.system.SysMenuVo;
+import com.cjh.codeqna.util.AuthContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +51,20 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public void addSysMenu(SysMenu sysMenu) {
         sysMenuMapper.add(sysMenu);
+        // 如果新添加子菜单，那么需要把父菜单的isHalf半开状态 1
+        updateSysRoleMenu(sysMenu);
+    }
+
+    // 新添加子菜单，将父菜单的isHalf半开状态 1
+    private void updateSysRoleMenu(SysMenu sysMenu) {
+        // 获取当前添加菜单的父菜单
+        SysMenu parentMenu = sysMenuMapper.findParentMenu(sysMenu.getParentId());
+        if (parentMenu != null) {
+            // 把父菜单的isHalf改为半开状态 1
+            sysMenuRoleMapper.updateParentMenuIsHalf(parentMenu.getId());
+            // 递归调用
+            updateSysRoleMenu(parentMenu);
+        }
     }
 
     // 菜单修改
@@ -90,9 +108,38 @@ public class SysMenuServiceImpl implements SysMenuService {
         sysMenuRoleMapper.deleteByRoleId(assignMenuDto.getRoleId());
         // 保存分配数据
         List<Map<String, Number>> menuInfo = assignMenuDto.getMenuIdList();
-        System.out.println("@@@@@@@@@@@@@@@" + menuInfo);
         if (menuInfo != null && menuInfo.size() > 0) {  // 角色分配了菜单
             sysMenuRoleMapper.doAssign(assignMenuDto);
         }
+    }
+
+    // 查询管理员可以操作的菜单
+    @Override
+    public List<SysMenuVo> findMenusByUserId() {
+        // 获取当前用户id
+        SysUser sysUser = AuthContextUtil.get();
+        Long userId = sysUser.getId();
+        // 根据userId查询可以操作菜单
+        List<SysMenu> sysMenuList = sysMenuMapper.findMenusByUserId(userId);
+        // 封装要求数据格式，返回
+        List<SysMenu> sysMenuVoList = MenuHelper.buildTree(sysMenuList);
+        return this.buildMenus(sysMenuVoList);
+    }
+
+    // 将List<SysMenu>对象转换成List<SysMenuVo>对象
+    private List<SysMenuVo> buildMenus(List<SysMenu> menus) {
+
+        List<SysMenuVo> sysMenuVoList = new LinkedList<SysMenuVo>();
+        for (SysMenu sysMenu : menus) {
+            SysMenuVo sysMenuVo = new SysMenuVo();
+            sysMenuVo.setTitle(sysMenu.getTitle());
+            sysMenuVo.setName(sysMenu.getComponent());
+            List<SysMenu> children = sysMenu.getChildren();
+            if (!CollectionUtils.isEmpty(children)) {
+                sysMenuVo.setChildren(buildMenus(children));
+            }
+            sysMenuVoList.add(sysMenuVo);
+        }
+        return sysMenuVoList;
     }
 }

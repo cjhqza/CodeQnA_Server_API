@@ -20,4 +20,7 @@ public interface SysMenuRoleMapper {
 
     // 分配菜单提交
     void doAssign(AssignMenuDto assignMenuDto);
+
+    // 把父菜单的isHalf改为半开状态
+    void updateParentMenuIsHalf(Long menuId);
 }

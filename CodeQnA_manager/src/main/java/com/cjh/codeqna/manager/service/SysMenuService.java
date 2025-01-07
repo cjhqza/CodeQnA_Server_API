@@ -2,6 +2,7 @@ package com.cjh.codeqna.manager.service;
 
 import com.cjh.codeqna.model.dto.system.AssignMenuDto;
 import com.cjh.codeqna.model.entity.system.SysMenu;
+import com.cjh.codeqna.model.vo.system.SysMenuVo;
 
 import java.util.List;
 import java.util.Map;
@@ -29,4 +30,7 @@ public interface SysMenuService {
 
     // 分配菜单提交
     void doAssign(AssignMenuDto assignMenuDto);
+
+    // 查询管理员可以操作的菜单
+    List<SysMenuVo> findMenusByUserId();
 }

@@ -75,9 +75,7 @@ public class SysRoleController {
     // 分配菜单提交
     @PostMapping(value = "/doAssign")
     public Result doAssign(@RequestBody AssignMenuDto assignMenuDto) {
-        System.out.println("123456" + assignMenuDto);
         sysMenuService.doAssign(assignMenuDto);
-        System.out.println("@@@@@@@@@@");
         return Result.build(null , ResultCodeEnum.SUCCESS) ;
     }
 }

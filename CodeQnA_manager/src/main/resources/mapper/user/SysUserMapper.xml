@@ -84,6 +84,7 @@
         </if>
         update_time =  NOW()
         WHERE id = #{id}
+        AND is_deleted = 0
     </update>
 
     <!--人员删除-->

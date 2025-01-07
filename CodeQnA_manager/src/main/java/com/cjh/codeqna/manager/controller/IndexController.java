@@ -1,5 +1,6 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.manager.service.SysMenuService;
 import com.cjh.codeqna.manager.service.SysUserService;
 import com.cjh.codeqna.manager.service.ValidateCodeService;
 import com.cjh.codeqna.model.dto.system.LoginDto;
@@ -7,6 +8,7 @@ import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.cjh.codeqna.model.vo.system.LoginVo;
+import com.cjh.codeqna.model.vo.system.SysMenuVo;
 import com.cjh.codeqna.model.vo.system.ValidateCodeVo;
 import com.cjh.codeqna.util.AuthContextUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Author: cjh
@@ -28,6 +32,8 @@ public class IndexController {
     private SysUserService sysUserService;
     @Autowired
     private ValidateCodeService validateCodeService;
+    @Autowired
+    private SysMenuService sysMenuService;
 
     // 管理员用户登录
     @Operation(summary = "登录接口")
@@ -58,6 +64,14 @@ public class IndexController {
     public Result logout(@RequestHeader(name="token") String token) {
         sysUserService.logout(token);
         return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
+    // 查询管理员可以操作的菜单
+    @Operation(summary = "管理员可操作菜单接口")
+    @GetMapping("/findMenusByUserId")
+    public Result findMenusByUserId() {
+        List<SysMenuVo> list = sysMenuService.findMenusByUserId();
+        return Result.build(list, ResultCodeEnum.SUCCESS);
     }
 
 }
