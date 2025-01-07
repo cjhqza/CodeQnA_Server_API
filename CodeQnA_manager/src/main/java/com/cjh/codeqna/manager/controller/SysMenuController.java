@@ -21,28 +21,28 @@ public class SysMenuController {
     private SysMenuService sysMenuService;
 
     // 菜单列表
-    @GetMapping("/findNodes")
+    @GetMapping(value = "/findNodes")
     public Result findNodes() {
         List<SysMenu> list = sysMenuService.findNodes();
         return Result.build(list, ResultCodeEnum.SUCCESS);
     }
 
     // 菜单添加
-    @PostMapping("/addSysMenu")
+    @PostMapping(value = "/addSysMenu")
     public Result addSysMenu(@RequestBody SysMenu sysMenu) {
         sysMenuService.addSysMenu(sysMenu);
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
     // 菜单修改
-    @PutMapping("/editSysMenu")
+    @PutMapping(value = "/editSysMenu")
     public Result editSysMenu(@RequestBody SysMenu sysMenu) {
         sysMenuService.editSysMenu(sysMenu);
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
 
     // 菜单删除
-    @DeleteMapping("/deleteSysMenuById/{id}")
+    @DeleteMapping(value = "/deleteSysMenuById/{id}")
     public Result deleteSysMenuById(@PathVariable("id") Long id) {
         sysMenuService.deleteSysMenuById(id);
         return Result.build(null, ResultCodeEnum.SUCCESS);

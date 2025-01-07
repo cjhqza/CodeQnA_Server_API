@@ -1,12 +1,13 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.manager.service.SysMenuService;
 import com.cjh.codeqna.manager.service.SysRoleService;
+import com.cjh.codeqna.model.dto.system.AssignMenuDto;
 import com.cjh.codeqna.model.dto.system.SysRoleDto;
 import com.cjh.codeqna.model.entity.system.SysRole;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
-import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,8 @@ import java.util.Map;
 public class SysRoleController {
     @Autowired
     private SysRoleService sysRoleService;
+    @Autowired
+    private SysMenuService sysMenuService;
 
     // 角色列表
     // pageNum：当前页数
@@ -60,5 +63,21 @@ public class SysRoleController {
     public Result findAllRoles(@PathVariable("userId") Long userId) {
         Map<String, Object> map = sysRoleService.findAllRoles(userId);
         return Result.build(map, ResultCodeEnum.SUCCESS);
+    }
+
+    // 查询所有菜单以及根据角色id查找对应的菜单id
+    @GetMapping(value = "/findMenuIdByRoleId/{roleId}")
+    public Result findMenuIdByRoleId(@PathVariable("roleId") Long roleId) {
+        Map<String, Object> map = sysMenuService.findMenuIdByRoleId(roleId);
+        return Result.build(map, ResultCodeEnum.SUCCESS);
+    }
+
+    // 分配菜单提交
+    @PostMapping(value = "/doAssign")
+    public Result doAssign(@RequestBody AssignMenuDto assignMenuDto) {
+        System.out.println("123456" + assignMenuDto);
+        sysMenuService.doAssign(assignMenuDto);
+        System.out.println("@@@@@@@@@@");
+        return Result.build(null , ResultCodeEnum.SUCCESS) ;
     }
 }
