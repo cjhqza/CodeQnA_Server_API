@@ -33,8 +33,21 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     // 拦截器注册
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        // 对swagger的请求不进行拦截
+        String[] swaggerURI = new String[]{"/swagger-resources/**",
+                "/webjars/**",
+                "/v2/**",
+                "/swagger-ui.html/**",
+                "/swagger-ui/**",
+                "/api",
+                "/api-docs",
+                "/api-docs/**",
+                "/doc.html/**",
+                "/v3/api-docs/**"
+            };
         registry.addInterceptor(loginAuthInterceptor)
                 .excludePathPatterns(managerUserProperties.getNoAuthUrls())
+                .excludePathPatterns(swaggerURI)
                 .addPathPatterns("/**");
     }
 
