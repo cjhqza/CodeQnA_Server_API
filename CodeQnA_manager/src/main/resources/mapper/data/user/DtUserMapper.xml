@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.manager.mapper.DtUserMapper">
+    <!--用户列表的全部列-->
+    <sql id="columns">
+        id,phone,username userName,password,sex,head_img_url,bg_img_url,self_intro,signture,status,create_time,update_time,is_deleted
+    </sql>
+
+    <!--用户列表-->
+    <select id="findByPage" resultType="com.cjh.codeqna.model.entity.data.DtUser">
+        SELECT <include refid="columns"/>
+        FROM dt_user
+        <where>
+            <if test="userName != null and userName != ''">
+                AND userName LIKE CONCAT('%', #{userName}, '%')
+            </if>
+            <if test="beginCreateTime != null and beginCreateTime != ''">
+                AND create_time >= #{beginCreateTime}
+            </if>
+            <if test="endCreateTime != null and endCreateTime != ''">
+                AND create_time &lt;= #{endCreateTime}
+            </if>
+            AND is_deleted = 0
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <!--修改用户状态-->
+    <update id="edit">
+        UPDATE dt_user
+        SET status = status ^ 1, update_time = NOW()
+        WHERE id = #{id}
+        AND is_deleted = 0
+    </update>
+
+    <!--用户删除-->
+    <update id="delete">
+        UPDATE dt_user
+        SET is_deleted = 1
+        WHERE id = #{dtUserId}
+    </update>
+</mapper>

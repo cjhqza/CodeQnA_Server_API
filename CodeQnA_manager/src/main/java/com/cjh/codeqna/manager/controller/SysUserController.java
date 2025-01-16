@@ -3,7 +3,6 @@ package com.cjh.codeqna.manager.controller;
 import com.cjh.codeqna.manager.service.SysUserService;
 import com.cjh.codeqna.model.dto.system.AssignRoleDto;
 import com.cjh.codeqna.model.dto.system.SysUserDto;
-import com.cjh.codeqna.model.entity.system.SysRole;
 import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
@@ -27,7 +26,7 @@ public class SysUserController {
     // pageSize：每页显示记录数
     // SysUserDto：条件人员传输数据对象
     @PostMapping(value = "/findByPage/{pageNum}/{pageSize}")
-    public Result<PageInfo<SysRole>> findByPage(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize, SysUserDto sysUserDto) {
+    public Result<PageInfo<SysUser>> findByPage(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize, SysUserDto sysUserDto) {
         // pageHelper插件实现分页
         PageInfo<SysUser> pageInfo = sysUserService.findByPage(pageNum , pageSize, sysUserDto) ;
         return Result.build(pageInfo , ResultCodeEnum.SUCCESS) ;
