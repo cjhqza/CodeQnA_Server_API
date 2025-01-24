@@ -19,6 +19,7 @@ public enum ResultCodeEnum {
     DATA_ERROR(204, "数据异常"),
     ACCOUNT_STOP( 216, "账号已停用"),
     STOCK_LESS( 219, "库存不足"),
+    TAG_NAME_IS_EXISTS(309, "标签名已经存在"),
     ;
 
     private Integer code ;      // 业务状态码

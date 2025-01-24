@@ -3,7 +3,6 @@ package com.cjh.codeqna.manager.controller;
 import com.cjh.codeqna.manager.service.DtUserService;
 import com.cjh.codeqna.model.dto.data.DtUserDto;
 import com.cjh.codeqna.model.entity.data.DtUser;
-import com.cjh.codeqna.model.entity.system.SysRole;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;

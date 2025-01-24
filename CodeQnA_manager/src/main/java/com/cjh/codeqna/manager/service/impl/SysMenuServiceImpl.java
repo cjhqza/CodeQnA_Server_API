@@ -4,7 +4,7 @@ import com.cjh.codeqna.common.exception.CodeQnAException;
 import com.cjh.codeqna.manager.mapper.SysMenuMapper;
 import com.cjh.codeqna.manager.mapper.SysMenuRoleMapper;
 import com.cjh.codeqna.manager.service.SysMenuService;
-import com.cjh.codeqna.manager.utils.MenuHelper;
+import com.cjh.codeqna.manager.utils.TreeHelper;
 import com.cjh.codeqna.model.dto.system.AssignMenuDto;
 import com.cjh.codeqna.model.entity.system.SysMenu;
 import com.cjh.codeqna.model.entity.system.SysUser;
@@ -42,8 +42,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             return null;
         }
         // 将集合封装所需的树型数据格式
-        List<SysMenu> treeList = MenuHelper.buildTree(sysMenuList);
-        System.out.println(treeList);
+        List<SysMenu> treeList = TreeHelper.buildMenuTree(sysMenuList);
         return treeList;
     }
 
@@ -122,7 +121,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         // 根据userId查询可以操作菜单
         List<SysMenu> sysMenuList = sysMenuMapper.findMenusByUserId(userId);
         // 封装要求数据格式，返回
-        List<SysMenu> sysMenuVoList = MenuHelper.buildTree(sysMenuList);
+        List<SysMenu> sysMenuVoList = TreeHelper.buildMenuTree(sysMenuList);
         return this.buildMenus(sysMenuVoList);
     }
 

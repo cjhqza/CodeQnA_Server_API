@@ -120,7 +120,7 @@ public class SysUserServiceImpl implements SysUserService {
         sysUser.setStatus(1);
         // 检查是否有头像地址，没有则设置默认头像地址
         if (StrUtil.isEmpty(sysUser.getAvatar())) {
-            sysUser.setAvatar("https://oss.aliyuncs.com/aliyun_id_photo_bucket/default_handsome.jpg");
+            sysUser.setAvatar("http://192.168.116.129:9001/codeqna-bucket/default/default_handsome.jpg");
         }
         // 将人员信息保存
         sysUserMapper.add(sysUser);

@@ -26,7 +26,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Autowired
     private MinioProperties minioProperties;
 
-    // 文件上传
+    // 系统人员头像文件上传
     @Override
     public String fileUpload(MultipartFile file) {
         try {
