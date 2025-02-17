@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.manager.mapper.DtKnowledgeMapper">
+    <sql id="columns">
+        id,type,user_id,title,content,status,create_time,update_time,is_deleted
+    </sql>
+
+    <resultMap id="knowledgeVoResultMap" type="com.cjh.codeqna.model.vo.data.DtKnowledgeVo">
+        <id property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="userName" column="username"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="tagIds" column="tag_ids" jdbcType="VARCHAR" typeHandler="com.cjh.codeqna.manager.typehandler.TagIdsTypeHandler"/>
+    </resultMap>
+
+    <!--根据标题和userIds查找DtKnowledge-->
+    <select id="findByPage" resultMap="knowledgeVoResultMap">
+        SELECT k.id, k.type, u.username, k.title, k.content, k.status, k.create_time, GROUP_CONCAT(kt.tag_id) AS tag_ids
+        FROM dt_knowledge k
+        INNER JOIN dt_user u
+        ON k.user_id = u.id
+        INNER JOIN dt_knowledge_tag kt
+        ON k.id = kt.knowledge_id
+        <where>
+            <if test="userName != null and userName != ''">
+                AND u.username LIKE CONCAT('%', #{userName}, '%')
+            </if>
+            <if test="title != null and title != ''">
+                AND k.title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            AND k.is_deleted = 0
+        </where>
+        GROUP BY k.id
+        <if test="tagId != null">
+            HAVING FIND_IN_SET(#{tagId}, GROUP_CONCAT(kt.tag_id)) > 0
+        </if>
+    </select>
+
+    <!--修改知识状态-->
+    <update id="edit">
+        UPDATE dt_knowledge
+        SET status = 0, update_time = NOW()
+        WHERE id = #{id}
+        AND is_deleted = 0
+    </update>
+
+    <!--分页查询-->
+    <select id="findByTitleAndUserIds" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT <include refid="columns" />
+        FROM dt_knowledge
+        <where>
+            <if test="title != null and title != ''">
+                AND title LIKE CONCAT ('%', #{title}, '%')
+            </if>
+            AND user_id IN
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+            AND is_deleted = 0
+        </where>
+    </select>
+</mapper>

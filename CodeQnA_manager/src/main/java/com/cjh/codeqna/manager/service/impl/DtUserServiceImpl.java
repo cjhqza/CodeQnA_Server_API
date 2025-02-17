@@ -33,7 +33,6 @@ public class DtUserServiceImpl implements DtUserService {
     // 修改用户状态
     @Override
     public void editDtUser(Long id) {
-        System.out.println("@@@@@@");
         dtUserMapper.edit(id);
     }
 

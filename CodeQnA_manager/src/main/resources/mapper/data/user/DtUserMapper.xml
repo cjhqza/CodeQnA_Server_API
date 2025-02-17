@@ -41,4 +41,24 @@
         SET is_deleted = 1
         WHERE id = #{dtUserId}
     </update>
+
+    <!--根据用户名查找所有的用户id集合-->
+    <select id="findIdByUserName" resultType="java.lang.Long">
+        SELECT id
+        FROM dt_user
+        <where>
+            <if test="userName != null and userName != ''">
+                AND userName LIKE CONCAT('%', #{userName}, '%')
+            </if>
+            AND is_deleted = 0
+        </where>
+    </select>
+
+    <!--根据用户id查找对应的用户名-->
+    <select id="findUserNameById" resultType="java.lang.String">
+        SELECT username userName
+        FROM dt_user
+        WHERE id = #{userId}
+        AND is_deleted = 0
+    </select>
 </mapper>

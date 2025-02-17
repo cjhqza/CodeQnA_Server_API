@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.manager.mapper.DtKnowledgeTagMapper">
+    <!--根据标签id查找所有关联的知识id-->
+    <select id="findKnowledgeIdByTagId" resultType="java.lang.Long">
+        SELECT knowledge_id
+        FROM dt_knowledge_tag
+        <where>
+            <if test="tagId != null and tagId != ''">
+                AND tag_id = #{tagId}
+            </if>
+            AND is_deleted = 0
+        </where>
+    </select>
+
+    <!--根据知识id查找对应的所有标签id集合-->
+    <select id="findTagIdByKnowledgeId" resultType="java.lang.Long">
+        SELECT tag_id
+        FROM dt_knowledge_tag
+        WHERE knowledge_id = #{knowledgeId}
+        AND is_deleted = 0
+    </select>
+</mapper>

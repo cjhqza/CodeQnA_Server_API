@@ -21,4 +21,10 @@ public interface DtUserMapper {
 
     // 用户删除
     void delete(Long dtUserId);
+
+    // 根据用户名查找所有的用户id集合
+    List<Long> findIdByUserName(String userName);
+
+    // 根据用户id查找对应的用户名
+    String findUserNameById(Long userId);
 }

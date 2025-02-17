@@ -7,13 +7,13 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     # jdbc:mysql://[ip地址]:[端口号]/[table名称]?...
-    url: jdbc:mysql://192.168.116.129:3306/db_codeqna?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://192.168.116.130:3306/db_codeqna?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root  # mysql登录用户名
     password: 1234  # mysql登录密码
   # Redis的相关配置
   data:
     redis:
-      host: 192.168.116.129 # redis服务的ip地址
+      host: 192.168.116.130 # redis服务的ip地址
       port: 6379  # redis服务的端口号
   #  时区设置
   jackson:
@@ -31,7 +31,7 @@ codeqna:
       - /admin/system/index/login
       - /admin/system/index/generateValidateCode
   minio:
-    endpointUrl: http://192.168.116.129:9001
+    endpointUrl: http://192.168.116.130:9001
     accessKey: minioadmin
     secreKey: minioadmin
     bucketName: codeqna-bucket

@@ -25,6 +25,7 @@ public class DtUserController {
     public Result<PageInfo<DtUser>> findByPage(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize, DtUserDto dtUserDto) {
         // pageHelper插件实现分页
         PageInfo<DtUser> pageInfo = dtUserService.findByPage(pageNum , pageSize, dtUserDto) ;
+        System.out.println(pageInfo);
         return Result.build(pageInfo , ResultCodeEnum.SUCCESS) ;
     }
 
