@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.manager.mapper.DtChatMapper">
+    <resultMap id="ChatVoResultMap" type="com.cjh.codeqna.model.vo.data.DtChatVo">
+        <id property="id" column="id"/>
+        <result property="userName1" column="username1"/>
+        <result property="userName2" column="username2"/>
+        <result property="lastMessageTime" column="last_message_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="user1Id" column="user1_id"/>
+        <result property="user2Id" column="user2_id"/>
+    </resultMap>
+
+    <!--会话列表-->
+    <select id="findByPage" resultMap="ChatVoResultMap">
+        SELECT c.id, u1.username username1, u2.username username2, c.last_message_time, c.create_time, u1.id user1_id, u2.id user2_id
+        FROM dt_chat c
+        INNER JOIN dt_user u1 ON u1.id = c.user1_id
+        INNER JOIN dt_user u2 ON u2.id = c.user2_id
+        WHERE c.is_deleted = 0
+        AND u1.is_deleted = 0
+        AND u2.is_deleted = 0
+    </select>
+</mapper>
