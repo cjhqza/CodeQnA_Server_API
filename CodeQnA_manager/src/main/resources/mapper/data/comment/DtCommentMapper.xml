@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.manager.mapper.DtCommentMapper">
+    <!--评论列表-->
+    <select id="findByPage" resultType="com.cjh.codeqna.model.vo.data.DtCommentVo">
+        SELECT c.id, c.knowledge_id, k.type, u.username userName, c.parent_id, c.content, c.create_time
+        FROM dt_comment c
+        INNER JOIN dt_user u
+        ON c.user_id = u.id
+        INNER JOIN dt_knowledge k
+        ON c.knowledge_id = k.id
+        <where>
+            <if test="userName != null and userName != ''">
+                AND userName LIKE CONCAT('%', #{userName}, '%')
+            </if>
+            <if test="beginCreateTime != null and beginCreateTime != ''">
+                AND c.create_time >= #{beginCreateTime}
+            </if>
+            <if test="endCreateTime != null and endCreateTime != ''">
+                AND c.create_time &lt;= #{endCreateTime}
+            </if>
+            AND c.is_deleted = 0
+        </where>
+        ORDER BY c.id
+    </select>
+
+    <!--删评-->
+    <update id="delete">
+        UPDATE dt_comment
+        SET is_deleted = 1
+        WHERE id = #{id}
+    </update>
+</mapper>
