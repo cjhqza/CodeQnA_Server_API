@@ -1,5 +1,6 @@
 package com.cjh.codeqna.manager.mapper;
 
+import com.cjh.codeqna.model.vo.data.DtKnowledgeVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

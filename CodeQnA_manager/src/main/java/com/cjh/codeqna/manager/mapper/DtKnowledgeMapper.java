@@ -28,4 +28,7 @@ public interface DtKnowledgeMapper {
 
     // 审批后的知识状态
     void process(Long id, Integer status);
+
+    // 知识类举报信息
+    DtKnowledgeVo findById(Long targetId);
 }

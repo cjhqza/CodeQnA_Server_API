@@ -1,6 +1,6 @@
 package com.cjh.codeqna.manager.config;
 
-import com.cjh.codeqna.manager.typehandler.TagIdsTypeHandler;
+import com.cjh.codeqna.manager.typehandler.TagTypeHandler;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ public class MyBatisConfiguration {
     @Bean
     public ConfigurationCustomizer myBatisConfigurationCustomizer() {
         return configuration -> {
-            configuration.getTypeHandlerRegistry().register(TagIdsTypeHandler.class);
+            configuration.getTypeHandlerRegistry().register(TagTypeHandler.class);
         };
     }
 }

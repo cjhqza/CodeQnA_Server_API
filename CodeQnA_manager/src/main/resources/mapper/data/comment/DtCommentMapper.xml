@@ -32,4 +32,15 @@
         SET is_deleted = 1
         WHERE id = #{id}
     </update>
+
+    <!--评论类举报信息-->
+    <select id="findById" resultType="com.cjh.codeqna.model.vo.data.DtCommentVo">
+        SELECT c.id, c.knowledge_id, k.type, u.username userName, c.parent_id, c.content, c.create_time
+        FROM dt_comment c
+        INNER JOIN dt_user u
+        ON c.user_id = u.id
+        INNER JOIN dt_knowledge k
+        ON c.knowledge_id = k.id
+        WHERE c.id = #{targetId}
+    </select>
 </mapper>

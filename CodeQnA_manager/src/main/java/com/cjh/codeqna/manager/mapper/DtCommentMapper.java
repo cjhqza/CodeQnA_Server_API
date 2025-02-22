@@ -18,4 +18,7 @@ public interface DtCommentMapper {
 
     // 删评
     void delete(Long id);
+
+    // 评论类举报信息
+    DtCommentVo findById(Long targetId);
 }

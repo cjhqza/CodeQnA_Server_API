@@ -15,18 +15,28 @@
         <result property="content" column="content"/>
         <result property="status" column="status"/>
         <result property="createTime" column="create_time"/>
-        <result property="tagIds" column="tag_ids" jdbcType="VARCHAR" typeHandler="com.cjh.codeqna.manager.typehandler.TagIdsTypeHandler"/>
+        <result property="tagNames" column="tag_names" jdbcType="VARCHAR" typeHandler="com.cjh.codeqna.manager.typehandler.TagTypeHandler"/>
     </resultMap>
 
     <!--根据标题和userIds查找DtKnowledge-->
     <select id="findByPage" resultMap="knowledgeVoResultMap">
-        SELECT k.id, k.type, u.username, k.title, k.content, k.status, k.create_time, GROUP_CONCAT(kt.tag_id) AS tag_ids
+        SELECT k.id, k.type, u.username, k.title, k.content, k.status, k.create_time, GROUP_CONCAT(t.tag_name) AS tag_names
         FROM dt_knowledge k
         INNER JOIN dt_user u
         ON k.user_id = u.id
         INNER JOIN dt_knowledge_tag kt
         ON k.id = kt.knowledge_id
+        INNER JOIN dt_tag t
+        ON kt.tag_id = t.id
         <where>
+            <if test="tagId != null">
+                k.id IN (
+                    SELECT kt_inner.knowledge_id
+                    FROM dt_knowledge_tag kt_inner
+                    WHERE kt_inner.tag_id = #{tagId}
+                    AND kt_inner.is_deleted = 0
+                )
+            </if>
             <if test="userName != null and userName != ''">
                 AND u.username LIKE CONCAT('%', #{userName}, '%')
             </if>
@@ -36,9 +46,6 @@
             AND k.is_deleted = 0
         </where>
         GROUP BY k.id
-        <if test="tagId != null">
-            HAVING FIND_IN_SET(#{tagId}, GROUP_CONCAT(kt.tag_id)) > 0
-        </if>
     </select>
 
     <!--修改知识状态-->
@@ -50,18 +57,27 @@
     </update>
 
     <select id="findByPageByOrder" resultMap="knowledgeVoResultMap">
-        SELECT k.id, k.type, u.username, k.title, k.content, k.status, k.create_time, GROUP_CONCAT(kt.tag_id) AS tag_ids
+        SELECT k.id, k.type, u.username, k.title, k.content, k.status, k.create_time, GROUP_CONCAT(t.tag_name) AS tag_names
         FROM dt_knowledge k
         INNER JOIN dt_user u
         ON k.user_id = u.id
         INNER JOIN dt_knowledge_tag kt
         ON k.id = kt.knowledge_id
-        WHERE k.status = 0
-        AND k.is_deleted = 0
+        INNER JOIN dt_tag t
+        ON kt.tag_id = t.id
+        <where>
+            <if test="tagId != null">
+                k.id IN (
+                    SELECT kt_inner.knowledge_id
+                    FROM dt_knowledge_tag kt_inner
+                    WHERE kt_inner.tag_id = #{tagId}
+                    AND kt_inner.is_deleted = 0
+                )
+            </if>
+            AND k.status = 0
+            AND k.is_deleted = 0
+        </where>
         GROUP BY k.id
-        <if test="tagId != null">
-            HAVING FIND_IN_SET(#{tagId}, GROUP_CONCAT(kt.tag_id)) > 0
-        </if>
     </select>
 
     <update id="process">
@@ -70,6 +86,19 @@
         WHERE id = #{id}
         AND is_deleted = 0
     </update>
+
+    <!--知识类举报信息-->
+    <select id="findById" resultMap="knowledgeVoResultMap">
+        SELECT k.id, k.type, u.username, k.title, k.content, k.status, k.create_time, GROUP_CONCAT(t.tag_name) AS tag_names
+        FROM dt_knowledge k
+        INNER JOIN dt_user u
+        ON k.user_id = u.id
+        INNER JOIN dt_knowledge_tag kt
+        ON k.id = kt.knowledge_id
+        INNER JOIN dt_tag t
+        ON kt.tag_id = t.id
+        WHERE k.id = #{targetId}
+    </select>
 
     <!--分页查询-->
     <select id="findByTitleAndUserIds" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">

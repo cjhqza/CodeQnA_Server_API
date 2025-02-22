@@ -42,6 +42,13 @@
         WHERE id = #{dtUserId}
     </update>
 
+    <!--用户类举报信息-->
+    <select id="findById" resultType="com.cjh.codeqna.model.entity.data.DtUser">
+        SELECT <include refid="columns" />
+        FROM dt_user
+        WHERE id = #{targetId}
+    </select>
+
     <!--根据用户名查找所有的用户id集合-->
     <select id="findIdByUserName" resultType="java.lang.Long">
         SELECT id
