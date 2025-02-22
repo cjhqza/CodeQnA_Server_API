@@ -44,7 +44,29 @@
     <!--修改知识状态-->
     <update id="edit">
         UPDATE dt_knowledge
-        SET status = 0, update_time = NOW()
+        SET status = 0
+        WHERE id = #{id}
+        AND is_deleted = 0
+    </update>
+
+    <select id="findByPageByOrder" resultMap="knowledgeVoResultMap">
+        SELECT k.id, k.type, u.username, k.title, k.content, k.status, k.create_time, GROUP_CONCAT(kt.tag_id) AS tag_ids
+        FROM dt_knowledge k
+        INNER JOIN dt_user u
+        ON k.user_id = u.id
+        INNER JOIN dt_knowledge_tag kt
+        ON k.id = kt.knowledge_id
+        WHERE k.status = 0
+        AND k.is_deleted = 0
+        GROUP BY k.id
+        <if test="tagId != null">
+            HAVING FIND_IN_SET(#{tagId}, GROUP_CONCAT(kt.tag_id)) > 0
+        </if>
+    </select>
+
+    <update id="process">
+        UPDATE dt_knowledge
+        SET status = #{status}
         WHERE id = #{id}
         AND is_deleted = 0
     </update>

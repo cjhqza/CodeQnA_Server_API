@@ -22,4 +22,10 @@ public interface DtKnowledgeMapper {
 
     // 修改知识状态
     void edit(Long id);
+
+    // 获取待审批的知识列表
+    List<DtKnowledgeVo> findByPageByOrder();
+
+    // 审批后的知识状态
+    void process(Long id, Integer status);
 }

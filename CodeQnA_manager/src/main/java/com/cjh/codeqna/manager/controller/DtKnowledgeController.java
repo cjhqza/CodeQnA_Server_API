@@ -33,4 +33,18 @@ public class DtKnowledgeController {
         dtKnowledgeService.editDtKnowledge(id);
         return Result.build(null, ResultCodeEnum.SUCCESS);
     }
+
+    // 获取待审批的知识列表
+    @PostMapping(value = "/findByPageByOrder/{pageNum}/{pageSize}")
+    public Result findByPageByOrder(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize) {
+        PageInfo<DtKnowledgeVo> pageInfo = dtKnowledgeService.findByPageByOrder(pageNum, pageSize);
+        return Result.build(pageInfo, ResultCodeEnum.SUCCESS);
+    }
+
+    // 审批后的知识状态
+    @PutMapping(value = "/processDtKnowledge/{id}/{status}")
+    public Result processDtKnowledge(@PathVariable("id") Long id, @PathVariable("status") Integer status) {
+        dtKnowledgeService.processDtKnowledge(id, status);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
 }

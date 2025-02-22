@@ -16,4 +16,10 @@ public interface DtKnowledgeService {
 
     // 修改知识状态
     void editDtKnowledge(Long id);
+
+    // 获取待审批的知识列表
+    PageInfo<DtKnowledgeVo> findByPageByOrder(Integer pageNum, Integer pageSize);
+
+    // 审批后的知识状态
+    void processDtKnowledge(Long id, Integer status);
 }

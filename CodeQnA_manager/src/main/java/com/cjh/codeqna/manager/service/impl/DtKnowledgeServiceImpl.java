@@ -42,4 +42,18 @@ public class DtKnowledgeServiceImpl implements DtKnowledgeService {
     public void editDtKnowledge(Long id) {
         dtKnowledgeMapper.edit(id);
     }
+
+    // 获取待审批的知识列表
+    @Override
+    public PageInfo<DtKnowledgeVo> findByPageByOrder(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<DtKnowledgeVo> list = dtKnowledgeMapper.findByPageByOrder();
+        return new PageInfo<>(list);
+    }
+
+    // 审批后的知识状态
+    @Override
+    public void processDtKnowledge(Long id, Integer status) {
+        dtKnowledgeMapper.process(id, status);
+    }
 }
