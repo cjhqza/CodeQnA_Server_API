@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.manager.mapper.AprvReportProcessMapper">
+    <sql id="columns">
+        id, report_id, processor_id, action_token, feedback, process_time, is_deleted
+    </sql>
+
+    <!--提交举报处理-->
+    <insert id="insert">
+        INSERT INTO aprv_report_process(
+            id,
+            report_id,
+            processor_id,
+            action_token,
+            feedback
+        ) VALUES (
+            #{id},
+            #{reportId},
+            #{processorId},
+            #{actionToken},
+            #{feedback}
+        )
+    </insert>
+
+    <!--获取举报处理结果-->
+    <select id="findByReportId" resultType="com.cjh.codeqna.model.entity.approval.AprvReportProcess">
+        SELECT <include refid="columns" />
+        FROM aprv_report_process
+        WHERE report_id = #{reportId}
+    </select>
+</mapper>

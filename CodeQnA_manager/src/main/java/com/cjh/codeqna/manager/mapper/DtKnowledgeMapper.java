@@ -31,4 +31,7 @@ public interface DtKnowledgeMapper {
 
     // 知识类举报信息
     DtKnowledgeVo findById(Long targetId);
+
+    // 根据创作者id找到对应用户名
+    String findUserNameById(Long targetId);
 }

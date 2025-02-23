@@ -26,7 +26,7 @@ public interface DtUserMapper {
     List<Long> findIdByUserName(String userName);
 
     // 根据用户id查找对应的用户名
-    String findUserNameById(Long userId);
+    String findUserNameById(Long targetId);
 
     // 用户类举报信息
     DtUser findById(Long targetId);

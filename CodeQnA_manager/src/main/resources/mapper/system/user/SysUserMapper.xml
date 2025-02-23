@@ -88,9 +88,16 @@
     </update>
 
     <!--人员删除-->
-    <delete id="delete">
+    <update id="delete">
         UPDATE sys_user
         SET is_deleted=1
         WHERE id = #{sysUserId}
-    </delete>
+    </update>
+
+    <!--人员查找-->
+    <select id="findById" resultType="com.cjh.codeqna.model.entity.system.SysUser">
+        SELECT <include refid="columns" />
+        FROM sys_user
+        WHERE id = #{processorId}
+    </select>
 </mapper>

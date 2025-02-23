@@ -1,5 +1,6 @@
 package com.cjh.codeqna.manager.service;
 
+import com.cjh.codeqna.model.entity.approval.AprvReportProcess;
 import com.cjh.codeqna.model.entity.data.DtUser;
 import com.cjh.codeqna.model.vo.approval.AprvReportVo;
 import com.cjh.codeqna.model.vo.data.DtCommentVo;
@@ -24,4 +25,13 @@ public interface AprvReportService {
 
     // 评论类举报信息
     DtCommentVo findTargetFromComment(Long targetId);
+
+    // 获取举报用户名
+    String findReportedUserByTypeAndId(Integer targetType, Long targetId);
+
+    // 提交举报处理
+    void processReport(Integer status, AprvReportProcess aprvReportProcess);
+
+    // 获取举报处理结果
+    AprvReportProcess getResolvedReport(Long reportId);
 }

@@ -7,6 +7,7 @@ import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
+import org.simpleframework.xml.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,5 +59,12 @@ public class SysUserController {
     public Result assignRole(@RequestBody AssignRoleDto assignRoleDto) {
         sysUserService.assignRole(assignRoleDto);
         return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
+    // 人员查找
+    @PostMapping(value = "/getSysUserById/{processorId}")
+    public Result getSysUserById(@PathVariable("processorId") Long processorId) {
+        SysUser sysUser = sysUserService.getSysUserById(processorId);
+        return Result.build(sysUser, ResultCodeEnum.SUCCESS);
     }
 }

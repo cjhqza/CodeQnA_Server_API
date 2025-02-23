@@ -15,4 +15,7 @@ import java.util.List;
 public interface AprvReportMapper {
     // 举报列表
     List<AprvReportVo> findByPage(Integer status);
+
+    // 更新举报消息对应状态
+    void updateStatus(Long reportId, Integer status);
 }

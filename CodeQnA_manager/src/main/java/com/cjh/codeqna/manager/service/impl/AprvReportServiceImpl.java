@@ -2,6 +2,7 @@ package com.cjh.codeqna.manager.service.impl;
 
 import com.cjh.codeqna.manager.mapper.*;
 import com.cjh.codeqna.manager.service.AprvReportService;
+import com.cjh.codeqna.model.entity.approval.AprvReportProcess;
 import com.cjh.codeqna.model.entity.data.DtUser;
 import com.cjh.codeqna.model.vo.approval.AprvReportVo;
 import com.cjh.codeqna.model.vo.data.DtCommentVo;
@@ -28,6 +29,8 @@ public class AprvReportServiceImpl implements AprvReportService {
     private DtKnowledgeMapper dtKnowledgeMapper;
     @Autowired
     private DtCommentMapper dtCommentMapper;
+    @Autowired
+    private AprvReportProcessMapper aprvReportProcessMapper;
 
     // 举报列表
     @Override
@@ -54,5 +57,30 @@ public class AprvReportServiceImpl implements AprvReportService {
     @Override
     public DtCommentVo findTargetFromComment(Long targetId) {
         return dtCommentMapper.findById(targetId);
+    }
+
+    // 获取举报用户名
+    @Override
+    public String findReportedUserByTypeAndId(Integer targetType, Long targetId) {
+        if (targetType == 0) {
+            return dtUserMapper.findUserNameById(targetId);
+        } else if (targetType == 1) {
+            return dtKnowledgeMapper.findUserNameById(targetId);
+        }
+        return dtCommentMapper.findUserNameById(targetId);
+    }
+
+    // 提交举报处理
+    @Override
+    public void processReport(Integer status, AprvReportProcess aprvReportProcess) {
+        aprvReportProcessMapper.insert(aprvReportProcess);
+        // 更新举报消息对应状态
+        aprvReportMapper.updateStatus(aprvReportProcess.getReportId(), status);
+    }
+
+    // 获取举报处理结果
+    @Override
+    public AprvReportProcess getResolvedReport(Long reportId) {
+        return aprvReportProcessMapper.findByReportId(reportId);
     }
 }

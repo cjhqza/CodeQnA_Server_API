@@ -36,4 +36,7 @@ public interface SysUserService {
 
     // 人员分配角色
     void assignRole(AssignRoleDto assignRoleDto);
+
+    // 人员查找
+    SysUser getSysUserById(Long processorId);
 }

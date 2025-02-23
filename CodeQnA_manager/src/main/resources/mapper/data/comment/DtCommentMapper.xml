@@ -43,4 +43,13 @@
         ON c.knowledge_id = k.id
         WHERE c.id = #{targetId}
     </select>
+
+    <!--根据评论者id找到对应用户名-->
+    <select id="findUserNameById" resultType="java.lang.String">
+        SELECT DISTINCT u.username
+        FROM dt_comment c
+        INNER JOIN dt_user u
+        ON c.user_id = u.id
+        WHERE c.user_id = #{targetId}
+    </select>
 </mapper>

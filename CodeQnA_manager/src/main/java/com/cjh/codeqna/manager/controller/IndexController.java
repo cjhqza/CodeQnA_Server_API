@@ -68,10 +68,9 @@ public class IndexController {
 
     // 查询管理员可以操作的菜单
     @Operation(summary = "管理员可操作菜单接口")
-    @GetMapping("/findMenusByUserId")
+    @GetMapping(value = "/findMenusByUserId")
     public Result findMenusByUserId() {
         List<SysMenuVo> list = sysMenuService.findMenusByUserId();
         return Result.build(list, ResultCodeEnum.SUCCESS);
     }
-
 }

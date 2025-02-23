@@ -21,4 +21,7 @@ public interface DtCommentMapper {
 
     // 评论类举报信息
     DtCommentVo findById(Long targetId);
+
+    // 根据评论者id找到对应用户名
+    String findUserNameById(Long targetId);
 }

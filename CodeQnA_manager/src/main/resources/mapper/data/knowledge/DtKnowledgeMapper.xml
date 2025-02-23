@@ -100,6 +100,15 @@
         WHERE k.id = #{targetId}
     </select>
 
+    <!--根据创作者id找到对应用户名-->
+    <select id="findUserNameById" resultType="java.lang.String">
+        SELECT DISTINCT u.username
+        FROM dt_knowledge k
+        INNER JOIN dt_user u
+        ON k.user_id = u.id
+        WHERE k.user_id = #{targetId}
+    </select>
+
     <!--分页查询-->
     <select id="findByTitleAndUserIds" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
         SELECT <include refid="columns" />

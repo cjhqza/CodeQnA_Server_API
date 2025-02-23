@@ -26,4 +26,11 @@
         ON u.id = r.reporter_id
         WHERE r.status = #{status}
     </select>
+
+    <!--更新举报消息对应状态-->
+    <update id="updateStatus">
+        UPDATE aprv_report
+        SET status = #{status}
+        WHERE id = #{reportId}
+    </update>
 </mapper>

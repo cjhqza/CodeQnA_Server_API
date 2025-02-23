@@ -28,4 +28,7 @@ public interface SysUserMapper {
 
     // 人员删除
     void delete(Long sysUserId);
+
+    // 人员查找
+    SysUser findById(Long processorId);
 }

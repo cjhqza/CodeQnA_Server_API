@@ -151,4 +151,10 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
     }
+
+    // 人员查找
+    @Override
+    public SysUser getSysUserById(Long processorId) {
+        return sysUserMapper.findById(processorId);
+    }
 }

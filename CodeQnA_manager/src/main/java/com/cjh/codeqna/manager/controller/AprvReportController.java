@@ -1,6 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
 import com.cjh.codeqna.manager.service.AprvReportService;
+import com.cjh.codeqna.model.entity.approval.AprvReportProcess;
 import com.cjh.codeqna.model.entity.data.DtUser;
 import com.cjh.codeqna.model.vo.approval.AprvReportVo;
 import com.cjh.codeqna.model.vo.common.Result;
@@ -35,16 +36,35 @@ public class AprvReportController {
     // 查看举报对象信息
     @PostMapping(value = "/findTargetByTypeAndId/{targetType}/{targetId}")
     public Result findTargetByTypeAndId(@PathVariable("targetType") Integer targetType, @PathVariable("targetId") Long targetId) {
-        System.out.println(targetType + " " + targetId);
         if (targetType == 0) {
             DtUser dtUser = aprvReportService.findTargetFromUser(targetId);
             return Result.build(dtUser, ResultCodeEnum.SUCCESS);
         } else if (targetType == 1) {
-            System.out.println(111);
             DtKnowledgeVo dtKnowledgeVo = aprvReportService.findTargetFromKnowledge(targetId);
             return Result.build(dtKnowledgeVo, ResultCodeEnum.SUCCESS);
         }
         DtCommentVo dtCommentVo = aprvReportService.findTargetFromComment(targetId);
         return Result.build(dtCommentVo, ResultCodeEnum.SUCCESS);
+    }
+
+    // 获取举报用户名
+    @PostMapping(value = "/findReportedUserByTypeAndId/{targetType}/{targetId}")
+    public Result findReportedUserByTypeAndId(@PathVariable("targetType") Integer targetType, @PathVariable("targetId") Long targetId) {
+        String reportedUserName = aprvReportService.findReportedUserByTypeAndId(targetType, targetId);
+        return Result.build(reportedUserName, ResultCodeEnum.SUCCESS);
+    }
+
+    // 提交举报处理
+    @PostMapping(value = "/processReport/{status}")
+    public Result processReport(@PathVariable("status") Integer status, AprvReportProcess aprvReportProcess) {
+        aprvReportService.processReport(status, aprvReportProcess);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
+    // 获取举报处理结果
+    @PostMapping(value = "/getResolvedReport/{reportId}")
+    public Result getResolvedReport(@PathVariable("reportId") Long reportId) {
+        AprvReportProcess aprvReportProcess = aprvReportService.getResolvedReport(reportId);
+        return Result.build(aprvReportProcess, ResultCodeEnum.SUCCESS);
     }
 }
