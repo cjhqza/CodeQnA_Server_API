@@ -109,6 +109,14 @@
         WHERE k.user_id = #{targetId}
     </select>
 
+    <!--获取前一天知识产出总数-->
+    <select id="selectStatistcsByDate" resultType="com.cjh.codeqna.model.entity.statistcs.StatsKnowledge">
+        SELECT DATE_FORMAT(k.create_time ,'%Y-%m-%d') knowledgeDate, COUNT(k.id) totalNum
+        FROM dt_knowledge k
+        WHERE DATE_FORMAT(k.create_time ,'%Y-%m-%d') = #{createTime}
+        GROUP BY DATE_FORMAT(k.create_time ,'%Y-%m-%d')
+    </select>
+
     <!--分页查询-->
     <select id="findByTitleAndUserIds" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
         SELECT <include refid="columns" />

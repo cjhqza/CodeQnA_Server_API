@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.manager.mapper.StatsKnowledgeMapper">
+
+    <sql id="columns">
+        id, knowledge_date, total_num, create_time, update_time, is_deleted
+    </sql>
+
+    <!--把统计结果加入到知识统计表中-->
+    <insert id="insert">
+        INSERT INTO stats_knowledge(
+            id,
+            knowledge_date,
+            total_num
+        ) VALUES (
+            #{id},
+            #{knowledgeDate},
+            #{totalNum}
+        )
+    </insert>
+
+    <!--查询知识统计集合-->
+    <select id="selectList" resultType="com.cjh.codeqna.model.entity.statistcs.StatsKnowledge">
+        SELECT <include refid="columns" />
+        FROM stats_knowledge
+        <where>
+            <if test="beginCreateTime != null and beginCreateTime != ''">
+                AND knowledge_date >= #{beginCreateTime}
+            </if>
+            <if test="endCreateTime != null and endCreateTime != ''">
+                AND knowledge_date &lt;= #{endCreateTime}
+            </if>
+        </where>
+        ORDER BY knowledge_date
+    </select>
+</mapper>

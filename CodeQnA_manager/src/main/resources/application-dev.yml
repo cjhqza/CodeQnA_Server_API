@@ -7,7 +7,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     # jdbc:mysql://[ip地址]:[端口号]/[table名称]?...
-    url: jdbc:mysql://192.168.116.130:3306/db_codeqna?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://192.168.116.130:3306/db_codeqna?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root  # mysql登录用户名
     password: 1234  # mysql登录密码
   # Redis的相关配置

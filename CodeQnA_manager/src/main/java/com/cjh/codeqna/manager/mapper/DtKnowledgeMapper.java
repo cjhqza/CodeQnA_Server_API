@@ -2,6 +2,7 @@ package com.cjh.codeqna.manager.mapper;
 
 import com.cjh.codeqna.model.dto.data.DtKnowledgeDto;
 import com.cjh.codeqna.model.entity.data.DtKnowledge;
+import com.cjh.codeqna.model.entity.statistcs.StatsKnowledge;
 import com.cjh.codeqna.model.vo.data.DtKnowledgeVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -34,4 +35,7 @@ public interface DtKnowledgeMapper {
 
     // 根据创作者id找到对应用户名
     String findUserNameById(Long targetId);
+
+    // 获取前一天知识产出总数
+    StatsKnowledge selectStatistcsByDate(String createDate);
 }
