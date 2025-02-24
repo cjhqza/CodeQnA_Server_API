@@ -1,5 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.FileUploadService;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
@@ -21,6 +23,7 @@ public class FileUploadController {
     private FileUploadService fileUploadService;
 
     // 系统人员头像文件上传
+    @Log(title = "文件上传:头像", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/system/avatarFileUpload")
     public Result avatarFileUpload(MultipartFile file) {
         String url = fileUploadService.fileUpload(file);
@@ -28,6 +31,7 @@ public class FileUploadController {
     }
 
     // 数据标签代表图文件上传
+    @Log(title = "文件上传:标签", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/data/tagImgfileUpload")
     public Result tagImgfileUpload(MultipartFile file) {
         String url = fileUploadService.fileUpload(file);

@@ -1,5 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.DtUserService;
 import com.cjh.codeqna.model.dto.data.DtUserDto;
 import com.cjh.codeqna.model.entity.data.DtUser;
@@ -21,6 +23,7 @@ public class DtUserController {
     private DtUserService dtUserService;
 
     // 用户列表
+    @Log(title = "用户管理:列表", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findByPage/{pageNum}/{pageSize}")
     public Result<PageInfo<DtUser>> findByPage(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize, DtUserDto dtUserDto) {
         // pageHelper插件实现分页
@@ -30,6 +33,7 @@ public class DtUserController {
     }
 
     // 修改用户状态
+    @Log(title = "用户管理:修改", businessType = 2, operatorType = OperatorType.MANAGE)
     @PutMapping(value = "/editDtUser/{id}")
     public Result editDtUser(@PathVariable("id") Long id) {
         System.out.println(id);
@@ -38,6 +42,7 @@ public class DtUserController {
     }
 
     // 用户删除
+    @Log(title = "用户管理:删除", businessType = 3, operatorType = OperatorType.MANAGE)
     @DeleteMapping(value = "/deleteDtUser/{dtUserId}")
     public Result deleteDtUser(@PathVariable("dtUserId") Long dtUserId) {
         dtUserService.deleteDtUser(dtUserId);

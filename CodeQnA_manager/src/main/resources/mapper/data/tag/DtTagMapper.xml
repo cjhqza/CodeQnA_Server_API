@@ -48,6 +48,14 @@
         AND is_deleted = 0
     </update>
 
+    <!--查询当前包含子标签的数量-->
+    <select id="findChildrenById" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM dt_tag
+        WHERE parent_id=#{dtTagId}
+        AND is_deleted=0
+    </select>
+
     <!--标签删除-->
     <update id="delete">
         UPDATE dt_tag

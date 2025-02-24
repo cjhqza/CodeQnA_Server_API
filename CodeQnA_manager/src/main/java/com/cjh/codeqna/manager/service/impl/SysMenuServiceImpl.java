@@ -13,6 +13,7 @@ import com.cjh.codeqna.model.vo.system.SysMenuVo;
 import com.cjh.codeqna.util.AuthContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
@@ -47,6 +48,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     // 菜单添加
+    @Transactional
     @Override
     public void addSysMenu(SysMenu sysMenu) {
         sysMenuMapper.add(sysMenu);
@@ -79,7 +81,8 @@ public class SysMenuServiceImpl implements SysMenuService {
         int count = sysMenuMapper.findChildrenById(id);
         // count大于0，说明有子菜单，那么不建议删除
         if (count > 0) {
-            throw new CodeQnAException(ResultCodeEnum.NODE_ERROR);
+            // throw new CodeQnAException(ResultCodeEnum.NODE_ERROR);
+            throw new RuntimeException();
         }
         // count等于0，直接删除
         sysMenuMapper.delete(id);
@@ -101,6 +104,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     // 分配菜单提交
+    @Transactional
     @Override
     public void doAssign(AssignMenuDto assignMenuDto) {
         // 删除角色之前分配过的菜单数据

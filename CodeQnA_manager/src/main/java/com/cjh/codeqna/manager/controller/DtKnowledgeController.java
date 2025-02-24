@@ -1,5 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.DtKnowledgeService;
 import com.cjh.codeqna.model.dto.data.DtKnowledgeDto;
 import com.cjh.codeqna.model.vo.common.Result;
@@ -21,6 +23,7 @@ public class DtKnowledgeController {
     private DtKnowledgeService dtKnowledgeService;
 
     // 知识列表
+    @Log(title = "知识管理:列表", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findByPage/{pageNum}/{pageSize}")
     public Result findByPage(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize, DtKnowledgeDto dtKnowledgeDto) {
         PageInfo<DtKnowledgeVo> pageInfo = dtKnowledgeService.findByPage(pageNum, pageSize, dtKnowledgeDto);
@@ -28,6 +31,7 @@ public class DtKnowledgeController {
     }
 
     // 修改知识状态
+    @Log(title = "知识管理:修改", businessType = 2, operatorType = OperatorType.MANAGE)
     @PutMapping(value = "/editDtKnowledge/{id}")
     public Result editDtKnowledge(@PathVariable("id") Long id) {
         dtKnowledgeService.editDtKnowledge(id);
@@ -35,6 +39,7 @@ public class DtKnowledgeController {
     }
 
     // 获取待审批的知识列表
+    @Log(title = "知识管理:指定待审批列表", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findByPageByOrder/{pageNum}/{pageSize}")
     public Result findByPageByOrder(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize) {
         PageInfo<DtKnowledgeVo> pageInfo = dtKnowledgeService.findByPageByOrder(pageNum, pageSize);
@@ -42,6 +47,7 @@ public class DtKnowledgeController {
     }
 
     // 审批后的知识状态
+    @Log(title = "知识管理:审批处理", businessType = 2, operatorType = OperatorType.MANAGE)
     @PutMapping(value = "/processDtKnowledge/{id}/{status}")
     public Result processDtKnowledge(@PathVariable("id") Long id, @PathVariable("status") Integer status) {
         dtKnowledgeService.processDtKnowledge(id, status);

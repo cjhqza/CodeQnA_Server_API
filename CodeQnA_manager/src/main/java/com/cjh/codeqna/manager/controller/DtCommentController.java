@@ -1,5 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.DtCommentService;
 import com.cjh.codeqna.model.dto.data.DtCommentDto;
 import com.cjh.codeqna.model.vo.common.Result;
@@ -23,6 +25,7 @@ public class DtCommentController {
     private DtCommentService dtCommentService;
 
     // 评论列表
+    @Log(title = "评论管理:列表", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findByPage/{pageNum}/{pageSize}")
     public Result findByPage(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize, DtCommentDto dtCommentDto) {
         PageInfo<DtCommentVo> list = dtCommentService.findByPage(pageNum, pageSize, dtCommentDto);
@@ -30,6 +33,7 @@ public class DtCommentController {
     }
 
     // 删评
+    @Log(title = "评论管理:删除", businessType = 3, operatorType = OperatorType.MANAGE)
     @DeleteMapping(value = "/deleteDtComment/{id}")
     public Result deleteDtComment(@PathVariable(value = "id") Long id) {
         dtCommentService.deleteDtComment(id);

@@ -1,5 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.SysMenuService;
 import com.cjh.codeqna.manager.service.SysUserService;
 import com.cjh.codeqna.manager.service.ValidateCodeService;

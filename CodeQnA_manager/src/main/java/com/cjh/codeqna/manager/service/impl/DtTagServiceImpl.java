@@ -13,6 +13,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -60,6 +61,7 @@ public class DtTagServiceImpl implements DtTagService {
     }
 
     // 标签修改
+    @Transactional
     @Override
     public void editDtTag(DtTag dtTag) {
         // 查询修改后的标签名称是否存在
@@ -74,6 +76,13 @@ public class DtTagServiceImpl implements DtTagService {
     // 标签删除
     @Override
     public void deleteDtTag(Long dtTagId) {
+        // 根据当前标签id，查询当前包含子标签的数量
+        int count = dtTagMapper.findChildrenById(dtTagId);
+        // count大于0，说明有子标签，那么不建议删除
+        if (count > 0) {
+            // throw new CodeQnAException(ResultCodeEnum.NODE_ERROR);
+            throw new RuntimeException();
+        }
         dtTagMapper.delete(dtTagId);
     }
 }

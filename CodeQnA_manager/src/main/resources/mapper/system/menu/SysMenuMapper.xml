@@ -60,7 +60,7 @@
     </update>
 
     <!--根据当前菜单id，查询当前包含子菜单的数量-->
-    <select id="findChildrenById" resultType="Integer">
+    <select id="findChildrenById" resultType="java.lang.Integer">
         SELECT COUNT(*)
         FROM sys_menu
         WHERE parent_id=#{id}

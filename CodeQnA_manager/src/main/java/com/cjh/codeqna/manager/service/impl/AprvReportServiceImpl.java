@@ -11,6 +11,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -71,6 +72,7 @@ public class AprvReportServiceImpl implements AprvReportService {
     }
 
     // 提交举报处理
+    @Transactional
     @Override
     public void processReport(Integer status, AprvReportProcess aprvReportProcess) {
         aprvReportProcessMapper.insert(aprvReportProcess);

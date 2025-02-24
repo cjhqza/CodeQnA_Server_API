@@ -1,5 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.AprvReportService;
 import com.cjh.codeqna.model.entity.approval.AprvReportProcess;
 import com.cjh.codeqna.model.entity.data.DtUser;
@@ -27,6 +29,7 @@ public class AprvReportController {
     private AprvReportService aprvReportService;
 
     // 举报列表
+    @Log(title = "举报审批:列表", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findByPage/{pageNum}/{pageSize}/{status}")
     public Result findByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @PathVariable("status") Integer status) {
         PageInfo<AprvReportVo> list = aprvReportService.findByPage(pageNum, pageSize, status);
@@ -34,6 +37,7 @@ public class AprvReportController {
     }
 
     // 查看举报对象信息
+    @Log(title = "举报审批:查找举报对象消息", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findTargetByTypeAndId/{targetType}/{targetId}")
     public Result findTargetByTypeAndId(@PathVariable("targetType") Integer targetType, @PathVariable("targetId") Long targetId) {
         if (targetType == 0) {
@@ -48,6 +52,7 @@ public class AprvReportController {
     }
 
     // 获取举报用户名
+    @Log(title = "举报审批:查找举报用户名", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findReportedUserByTypeAndId/{targetType}/{targetId}")
     public Result findReportedUserByTypeAndId(@PathVariable("targetType") Integer targetType, @PathVariable("targetId") Long targetId) {
         String reportedUserName = aprvReportService.findReportedUserByTypeAndId(targetType, targetId);
@@ -55,6 +60,7 @@ public class AprvReportController {
     }
 
     // 提交举报处理
+    @Log(title = "举报审批:提交举报处理", businessType = 2, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/processReport/{status}")
     public Result processReport(@PathVariable("status") Integer status, AprvReportProcess aprvReportProcess) {
         aprvReportService.processReport(status, aprvReportProcess);
@@ -62,6 +68,7 @@ public class AprvReportController {
     }
 
     // 获取举报处理结果
+    @Log(title = "举报审批:获取举报处理结果", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/getResolvedReport/{reportId}")
     public Result getResolvedReport(@PathVariable("reportId") Long reportId) {
         AprvReportProcess aprvReportProcess = aprvReportService.getResolvedReport(reportId);

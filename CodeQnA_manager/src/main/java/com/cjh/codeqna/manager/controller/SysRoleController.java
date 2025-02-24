@@ -1,5 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.SysMenuService;
 import com.cjh.codeqna.manager.service.SysRoleService;
 import com.cjh.codeqna.model.dto.system.AssignMenuDto;
@@ -30,6 +32,7 @@ public class SysRoleController {
     // pageNum：当前页数
     // pageSize：每页显示记录数
     // SysRoleDto：条件角色名称对象
+    @Log(title = "角色管理:列表", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findByPage/{pageNum}/{pageSize}")
     public Result findByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody SysRoleDto sysRoleDto) {
         // pageHelper插件实现分页
@@ -38,6 +41,7 @@ public class SysRoleController {
     }
 
     // 角色添加
+    @Log(title = "角色管理:新增", businessType = 1, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/addSysRole")
     public Result addSysRole(@RequestBody SysRole sysRole) {
         sysRoleService.addSysRole(sysRole);
@@ -45,6 +49,7 @@ public class SysRoleController {
     }
 
     // 角色修改
+    @Log(title = "角色管理:修改", businessType = 2, operatorType = OperatorType.MANAGE)
     @PutMapping(value = "/editSysRole")
     public Result editSysRole(@RequestBody SysRole sysRole) {
         sysRoleService.editSysRole(sysRole);
@@ -52,6 +57,7 @@ public class SysRoleController {
     }
 
     // 角色删除
+    @Log(title = "角色管理:删除", businessType = 3, operatorType = OperatorType.MANAGE)
     @DeleteMapping(value = "/deleteSysRoleById/{roleId}")
     public Result deleteSysRoleById(@PathVariable("roleId") Long roleId) {
         sysRoleService.deleteSysRoleById(roleId);
@@ -59,6 +65,7 @@ public class SysRoleController {
     }
 
     // 角色集合
+    @Log(title = "角色管理:人员ID查找角色", businessType = 0, operatorType = OperatorType.MANAGE)
     @GetMapping(value = "/findAllRoles/{userId}")
     public Result findAllRoles(@PathVariable("userId") Long userId) {
         Map<String, Object> map = sysRoleService.findAllRoles(userId);
@@ -66,6 +73,7 @@ public class SysRoleController {
     }
 
     // 查询所有菜单以及根据角色id查找对应的菜单id
+    @Log(title = "角色管理:角色ID查找菜单", businessType = 0, operatorType = OperatorType.MANAGE)
     @GetMapping(value = "/findMenuIdByRoleId/{roleId}")
     public Result findMenuIdByRoleId(@PathVariable("roleId") Long roleId) {
         Map<String, Object> map = sysMenuService.findMenuIdByRoleId(roleId);
@@ -73,6 +81,7 @@ public class SysRoleController {
     }
 
     // 分配菜单提交
+    @Log(title = "角色管理:分配菜单", businessType = 1, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/doAssign")
     public Result doAssign(@RequestBody AssignMenuDto assignMenuDto) {
         sysMenuService.doAssign(assignMenuDto);

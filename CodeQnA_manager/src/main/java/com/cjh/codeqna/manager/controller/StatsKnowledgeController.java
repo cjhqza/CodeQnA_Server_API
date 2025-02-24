@@ -1,4 +1,6 @@
 package com.cjh.codeqna.manager.controller;
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.StatsKnowledgeService;
 import com.cjh.codeqna.model.dto.statistcs.StatsKnowledgeDto;
 import com.cjh.codeqna.model.vo.common.Result;
@@ -21,6 +23,7 @@ public class StatsKnowledgeController {
     private StatsKnowledgeService statsKnowledgeService;
 
     // 获取知识统计数据
+    @Log(title = "知识统计:查找", businessType = 0, operatorType = OperatorType.MANAGE)
     @GetMapping(value = "/getStatsKnowledgeData")
     public Result getStatsKnowledgeData(StatsKnowledgeDto statsKnowledgeDto) {
         StatsKnowledgeVo statsKnowledgeVo = statsKnowledgeService.getStatsKnowledgeData(statsKnowledgeDto);

@@ -27,4 +27,7 @@ public interface DtTagMapper {
 
     // 标签删除
     void delete(Long dtTagId);
+
+    // 查询当前包含子标签的数量
+    int findChildrenById(Long dtTagId);
 }

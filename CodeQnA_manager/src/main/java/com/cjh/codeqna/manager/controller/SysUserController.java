@@ -1,5 +1,7 @@
 package com.cjh.codeqna.manager.controller;
 
+import com.cjh.codeqna.common.log.annotation.Log;
+import com.cjh.codeqna.common.log.enums.OperatorType;
 import com.cjh.codeqna.manager.service.SysUserService;
 import com.cjh.codeqna.model.dto.system.AssignRoleDto;
 import com.cjh.codeqna.model.dto.system.SysUserDto;
@@ -26,6 +28,7 @@ public class SysUserController {
     // pageNum：当前页数
     // pageSize：每页显示记录数
     // SysUserDto：条件人员传输数据对象
+    @Log(title = "人员管理:列表", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/findByPage/{pageNum}/{pageSize}")
     public Result<PageInfo<SysUser>> findByPage(@PathVariable(value = "pageNum") Integer pageNum, @PathVariable(value = "pageSize") Integer pageSize, SysUserDto sysUserDto) {
         // pageHelper插件实现分页
@@ -34,6 +37,7 @@ public class SysUserController {
     }
 
     // 人员添加
+    @Log(title = "人员管理:新增", businessType = 1, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/addSysUser")
     public Result addSysUser(@RequestBody SysUser sysUser) {
         sysUserService.addSysUser(sysUser);
@@ -41,6 +45,7 @@ public class SysUserController {
     }
 
     // 人员修改
+    @Log(title = "人员管理:修改", businessType = 2, operatorType = OperatorType.MANAGE)
     @PutMapping(value = "/editSysUser")
     public Result editSysUser(@RequestBody SysUser sysUser) {
         sysUserService.editSysUser(sysUser);
@@ -48,6 +53,7 @@ public class SysUserController {
     }
 
     // 人员删除
+    @Log(title = "人员管理:删除", businessType = 3, operatorType = OperatorType.MANAGE)
     @DeleteMapping(value = "/deleteSysUserById/{sysUserId}")
     public Result deleteSysUserById(@PathVariable("sysUserId") Long sysUserId) {
         sysUserService.deleteSysUserById(sysUserId);
@@ -55,6 +61,7 @@ public class SysUserController {
     }
 
     // 人员分配角色
+    @Log(title = "人员管理:分配角色", businessType = 1, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/assignRole")
     public Result assignRole(@RequestBody AssignRoleDto assignRoleDto) {
         sysUserService.assignRole(assignRoleDto);
@@ -62,6 +69,7 @@ public class SysUserController {
     }
 
     // 人员查找
+    @Log(title = "人员管理:人员ID号查找人员", businessType = 0, operatorType = OperatorType.MANAGE)
     @PostMapping(value = "/getSysUserById/{processorId}")
     public Result getSysUserById(@PathVariable("processorId") Long processorId) {
         SysUser sysUser = sysUserService.getSysUserById(processorId);

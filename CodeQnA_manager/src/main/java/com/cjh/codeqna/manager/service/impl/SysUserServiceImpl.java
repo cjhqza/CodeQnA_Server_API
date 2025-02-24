@@ -17,6 +17,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.List;
@@ -120,7 +121,7 @@ public class SysUserServiceImpl implements SysUserService {
         sysUser.setStatus(1);
         // 检查是否有头像地址，没有则设置默认头像地址
         if (StrUtil.isEmpty(sysUser.getAvatar())) {
-            sysUser.setAvatar("http://192.168.116.129:9001/codeqna-bucket/default/default_handsome.jpg");
+            sysUser.setAvatar("http://192.168.116.130:9001/codeqna-bucket/default/default_handsome.jpg");
         }
         // 将人员信息保存
         sysUserMapper.add(sysUser);
@@ -139,6 +140,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     // 人员分配角色
+    @Transactional
     @Override
     public void assignRole(AssignRoleDto assignRoleDto) {
         // 获取当前人员的id
@@ -149,7 +151,6 @@ public class SysUserServiceImpl implements SysUserService {
         for (Long roleId : assignRoleDto.getRoleIdsList()) {
             sysRoleUserMapper.assign(userId, roleId);
         }
-
     }
 
     // 人员查找

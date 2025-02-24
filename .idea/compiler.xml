@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="common-util" />
+        <module name="common-log" />
         <module name="common-service" />
         <module name="CodeQnA_manager" />
         <module name="CodeQnA_model" />
@@ -18,6 +19,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="CodeQnA_manager" options="-parameters" />
       <module name="CodeQnA_model" options="-parameters" />
+      <module name="common-log" options="-parameters" />
       <module name="common-service" options="-parameters" />
       <module name="common-util" options="-parameters" />
     </option>
