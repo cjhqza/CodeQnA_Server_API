@@ -37,9 +37,11 @@ public class LogAspect {
             // 调用业务方法之后，封装数据
             LogUtil.afterHandleLog(sysLog, proceed, sysOperLog, 0, null);
         } catch (Throwable e) {
-            // e.printStackTrace();
             LogUtil.afterHandleLog(sysLog, proceed, sysOperLog, 1, e.getMessage());
             // 抛出运行时异常
+            if (e instanceof CodeQnAException) {
+                throw (CodeQnAException) e;
+            }
             throw new CodeQnAException(ResultCodeEnum.DATA_ERROR);
         }
 

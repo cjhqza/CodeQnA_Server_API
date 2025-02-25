@@ -80,8 +80,7 @@ public class DtTagServiceImpl implements DtTagService {
         int count = dtTagMapper.findChildrenById(dtTagId);
         // count大于0，说明有子标签，那么不建议删除
         if (count > 0) {
-            // throw new CodeQnAException(ResultCodeEnum.NODE_ERROR);
-            throw new RuntimeException();
+            throw new CodeQnAException(ResultCodeEnum.NODE_ERROR);
         }
         dtTagMapper.delete(dtTagId);
     }

@@ -82,7 +82,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         // count大于0，说明有子菜单，那么不建议删除
         if (count > 0) {
             // throw new CodeQnAException(ResultCodeEnum.NODE_ERROR);
-            throw new RuntimeException();
+            throw new CodeQnAException(ResultCodeEnum.NODE_ERROR);
         }
         // count等于0，直接删除
         sysMenuMapper.delete(id);
