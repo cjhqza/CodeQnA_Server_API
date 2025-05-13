@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.comment.mapper.CommentMapper">
+
+    <!--远程调用：获取已有答复评论的知识id的集合-->
+    <select id="getKnowledgeIdOfComment" resultType="java.lang.Long">
+        SELECT DISTINCT knowledge_id
+        FROM dt_comment
+        WHERE is_deleted = 0
+    </select>
+
+    <!--远程调用：根据知识id获取答复数量不包括评论数量-->
+    <select id="getResponseCountByKnowledgeId" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM dt_comment
+        WHERE knowledge_id = #{knowledgeId}
+        AND parent_id = 0
+        AND is_deleted = 0
+    </select>
+
+    <!--按照最近时间排序先查找父级评论-->
+    <select id="getParentCommentByLatest" resultType="com.cjh.codeqna.model.vo.comment.CommentInfo">
+        SELECT
+            dc1.id,
+            dc1.parent_id,
+            dc1.ancestor_id,
+            dc1.user_id,
+            dc1.content,
+            dc1.create_time,
+            CASE
+                WHEN dc1.parent_id = 0 THEN 0
+                ELSE dc2.user_id
+            END AS toUserId,
+            IFNULL(
+                (SELECT COUNT(*) FROM dt_comment_appreciate dca1 WHERE dc1.id = dca1.comment_id AND dca1.is_deleted = 0),
+                0
+            ) AS appreciateCount,
+            CASE
+                WHEN EXISTS (
+                    SELECT 1 FROM dt_comment_appreciate dca2
+                    WHERE dc1.id = dca2.comment_id
+                    AND dca2.user_id = #{userId}
+                    AND dca2.is_deleted = 0
+                ) THEN true
+                ELSE false
+            END AS isAppreciate
+        FROM dt_comment dc1
+        LEFT JOIN dt_comment dc2
+        ON dc2.id = dc1.parent_id
+        WHERE dc1.knowledge_id = #{knowledgeId}
+        AND dc1.parent_id = 0
+        AND dc1.is_deleted = 0
+        ORDER BY dc1.create_time DESC
+    </select>
+
+    <!--再按照最近时间排序查找非父级评论评论-->
+    <select id="getChildrenCommentByIds" resultType="com.cjh.codeqna.model.vo.comment.CommentInfo">
+        SELECT
+            dc1.id,
+            dc1.parent_id,
+            dc1.ancestor_id,
+            dc1.user_id,
+            dc1.content,
+            dc1.create_time,
+        CASE
+            WHEN dc1.parent_id = 0 THEN 0
+            ELSE dc2.user_id
+        END AS toUserId,
+        IFNULL(
+            (SELECT COUNT(*) FROM dt_comment_appreciate dca1 WHERE dc1.id = dca1.comment_id AND dca1.is_deleted = 0),
+            0
+        ) AS appreciateCount,
+        CASE
+            WHEN EXISTS (
+                SELECT 1 FROM dt_comment_appreciate dca2
+                WHERE dc1.id = dca2.comment_id
+                AND dca2.user_id = #{userId}
+                AND dca2.is_deleted = 0
+            ) THEN true
+            ELSE false
+        END AS isAppreciate
+        FROM dt_comment dc1
+        LEFT JOIN dt_comment dc2
+        ON dc2.id = dc1.parent_id
+        WHERE dc1.knowledge_id = #{knowledgeId}
+        AND dc1.parent_id != 0
+        AND dc1.is_deleted = 0
+        ORDER BY dc1.create_time DESC
+    </select>
+
+    <!--按照赞赏数排序先查找父级评论-->
+    <select id="getParentCommentByMore" resultType="com.cjh.codeqna.model.vo.comment.CommentInfo">
+        SELECT
+            dc1.id,
+            dc1.parent_id,
+            dc1.ancestor_id,
+            dc1.user_id,
+            dc1.content,
+            dc1.create_time,
+        CASE
+            WHEN dc1.parent_id = 0 THEN 0
+            ELSE dc2.user_id
+        END AS toUserId,
+        IFNULL(
+            (SELECT COUNT(*) FROM dt_comment_appreciate dca1 WHERE dc1.id = dca1.comment_id AND dca1.is_deleted = 0),
+            0
+        ) AS appreciateCount,
+        CASE
+            WHEN EXISTS (
+                SELECT 1 FROM dt_comment_appreciate dca2
+                WHERE dc1.id = dca2.comment_id
+                AND dca2.user_id = #{userId}
+                AND dca2.is_deleted = 0
+            ) THEN true
+            ELSE false
+        END AS isAppreciate
+        FROM dt_comment dc1
+        LEFT JOIN dt_comment dc2
+        ON dc2.id = dc1.parent_id
+        WHERE dc1.knowledge_id = #{knowledgeId}
+        AND dc1.parent_id = 0
+        AND dc1.is_deleted = 0
+        ORDER BY appreciateCount DESC
+    </select>
+
+    <!--查询当前用户是否有点赞该评论-->
+    <select id="findComment" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM dt_comment_appreciate
+        WHERE comment_id = #{commentId}
+        AND user_id = #{userId}
+        AND is_deleted = 0
+    </select>
+
+    <!--取消点赞-->
+    <update id="cancelAppreciate">
+        UPDATE dt_comment_appreciate
+        SET is_deleted = 1
+        WHERE comment_id = #{commentId}
+        AND user_id = #{userId}
+        AND is_deleted = 0
+    </update>
+
+    <!--点赞-->
+    <insert id="appreciate">
+        INSERT INTO dt_comment_appreciate(comment_id, user_id)
+        VALUES (#{commentId}, #{userId})
+    </insert>
+
+    <!--submitComment-->
+    <insert id="submitComment">
+        INSERT INTO dt_comment(knowledge_id, parent_id, ancestor_id, user_id, content)
+        VALUES (#{knowledgeId}, #{parentId}, #{ancestorId}, #{userId}, #{content})
+    </insert>
+</mapper>

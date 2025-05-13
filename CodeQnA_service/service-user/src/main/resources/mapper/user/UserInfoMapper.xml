@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.user.mapper.UserInfoMapper">
+    <sql id="columns_dtUser">
+        id,phone,username userName,password,sex,head_img_url,bg_img_url,self_intro,signture,status,create_time,update_time,is_deleted
+    </sql>
+
+    <!--查找当前电话号码对应的用户对象-->
+    <select id="findByPhone" resultType="com.cjh.codeqna.model.entity.data.DtUser">
+        SELECT <include refid="columns_dtUser" />
+        FROM dt_user
+        WHERE phone = #{phone}
+        AND is_deleted = 0
+    </select>
+
+    <!--插入用户新数据-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO dt_user(
+            phone,
+            username,
+            password,
+            sex,
+            head_img_url,
+            bg_img_url,
+            status,
+            create_time,
+            update_time
+        ) VALUES(
+            #{phone},
+            #{userName},
+            #{password},
+            #{sex},
+            #{headImgUrl},
+            #{bgImgUrl},
+            #{status},
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <!--远程调用：根据用户ID获取用户对象-->
+    <select id="getUserById" resultType="com.cjh.codeqna.model.entity.data.DtUser">
+        SELECT <include refid="columns_dtUser" />
+        FROM dt_user
+        WHERE id = #{userId}
+    </select>
+
+    <!--用户检索集合-->
+    <select id="findByUserName" resultType="com.cjh.codeqna.model.vo.user.UserCbInfo">
+        SELECT DISTINCT username as userName
+        FROM dt_user
+        WHERE userName LIKE CONCAT('%',#{userInput},'%')
+        AND is_deleted = 0
+    </select>
+
+    <!--用户搜索结果集合-->
+    <select id="getUserSearchInfoList" resultType="com.cjh.codeqna.model.vo.user.UserSearchInfo">
+        SELECT id,username as userName,sex,head_img_url,bg_img_url,self_intro,signture,create_time
+        FROM dt_user
+        <where>
+            <if test="userName != null and userName != ''">
+                AND userName = #{userName}
+            </if>
+            AND is_deleted = 0
+        </where>
+    </select>
+
+    <!--远程调用：根据用户ID获取用户名-->
+    <select id="getUserNameById" resultType="java.lang.String">
+        SELECT username
+        FROM dt_user
+        WHERE id = #{userId}
+        AND is_deleted = 0
+    </select>
+
+    <!--按关注数(关注高的)获取用户信息-->
+    <select id="getUserInfoByFollow" resultType="com.cjh.codeqna.model.vo.user.UserInfo">
+        SELECT
+            du.id,
+            du.username AS userName,
+            du.head_img_url,
+            CASE
+                WHEN duf.user_id IS NOT NULL THEN true
+                ELSE false
+            END AS isFollow,
+            COUNT(DISTINCT duf2.user_id) AS followCount
+        FROM dt_user du
+        LEFT JOIN dt_user_follow duf
+        ON du.id = duf.to_user_id
+        AND duf.user_id = #{userId}
+        LEFT JOIN dt_user_follow duf2
+        ON du.id = duf2.to_user_id
+        AND duf2.is_deleted = 0
+        WHERE du.is_deleted = 0
+        AND du.id != #{userId}
+        GROUP BY du.id, userName, du.head_img_url, duf.user_id
+        HAVING COUNT(DISTINCT duf2.user_id) > 0
+        ORDER BY followCount DESC
+        LIMIT 10
+    </select>
+
+    <!--根据用户感兴趣标签集合获取用户信息集合-->
+    <select id="getRelatedUserInfo" resultType="com.cjh.codeqna.model.vo.user.UserInfo">
+        SELECT
+            du.id,
+            du.username AS userName,
+            du.head_img_url,
+            CASE
+                WHEN duf.user_id IS NOT NULL THEN true
+                ELSE false
+                END AS isFollow,
+            COUNT(DISTINCT duf2.user_id) AS followCount
+        FROM dt_user du
+        JOIN dt_user_tag dut ON du.id = dut.user_id AND dut.is_deleted = 0
+        LEFT JOIN dt_user_follow duf ON du.id = duf.to_user_id AND duf.user_id = #{userId}
+        LEFT JOIN dt_user_follow duf2 ON du.id = duf2.to_user_id AND duf2.is_deleted = 0
+        WHERE dut.tag_id IN
+        <foreach collection="tagIds" item="tagId" open="(" separator="," close=")">
+            #{tagId}
+        </foreach>
+        AND du.id != #{userId}
+        AND du.is_deleted = 0
+        GROUP BY du.id, userName, du.head_img_url, duf.user_id
+        ORDER BY followCount DESC
+        LIMIT 10
+    </select>
+
+    <!--根据userId找到用户搜索数据信息-->
+    <select id="getUserSearchInfo" resultType="com.cjh.codeqna.model.vo.user.UserSearchInfo">
+        SELECT id,username as userName,sex,head_img_url,bg_img_url,self_intro,signture,create_time
+        FROM dt_user
+        WHERE id = #{userId}
+        AND is_deleted = 0
+    </select>
+
+    <!--根据userId找用户其他数据信息-->
+    <select id="getUserotherInfo" resultType="com.cjh.codeqna.model.vo.user.UserotherInfo">
+        SELECT
+            (SELECT COUNT(*) FROM dt_user_follow WHERE user_id = #{userId} AND is_deleted = 0) AS followCount,
+            (SELECT COUNT(*) FROM dt_user_follow WHERE to_user_id = #{userId} AND is_deleted = 0) AS fansCount,
+            CASE
+                WHEN EXISTS (
+                    SELECT 1 FROM dt_user_follow
+                    WHERE user_id = #{myId} AND to_user_id = #{userId} AND is_deleted = 0
+                ) THEN true
+                ELSE false
+            END AS isFollow
+    </select>
+
+    <!--判断当前用户是否已经关注过该用户-->
+    <select id="getUserFollow" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM dt_user_follow
+        WHERE user_id = #{id} AND to_user_id = #{userId} AND is_deleted = 0
+    </select>
+
+    <!--执行取消关注操作-->
+    <update id="cancelFollow">
+        UPDATE  dt_user_follow
+        SET is_deleted = 1
+        WHERE user_id = #{id} AND to_user_id = #{userId}
+        AND is_deleted = 0
+    </update>
+
+    <!--执行关注操作-->
+    <insert id="follow">
+        INSERT INTO dt_user_follow(user_id, to_user_id)
+        VALUES (#{id}, #{userId})
+    </insert>
+
+    <!--修改用户信息-->
+    <update id="updateUserInfo">
+        UPDATE dt_user
+        SET username = #{userName},
+        password = #{password},
+        sex = #{sex},
+        head_img_url = #{headImgUrl},
+        bg_img_url = #{bgImgUrl},
+        signture = #{signture},
+        self_intro = #{selfIntro},
+        update_time = NOW()
+        WHERE id = #{id}
+    </update>
+</mapper>

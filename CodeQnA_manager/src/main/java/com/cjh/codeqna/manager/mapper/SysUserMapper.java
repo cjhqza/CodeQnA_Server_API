@@ -1,7 +1,7 @@
 package com.cjh.codeqna.manager.mapper;
 
-import com.cjh.codeqna.model.dto.system.LoginDto;
 import com.cjh.codeqna.model.dto.system.SysUserDto;
+import com.cjh.codeqna.model.dto.system.SysUserExcelDto;
 import com.cjh.codeqna.model.entity.system.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -31,4 +31,10 @@ public interface SysUserMapper {
 
     // 人员查找
     SysUser findById(Long processorId);
+
+    // 获取所有的sysUser数据的集合
+    List<SysUser> findAll();
+
+    // 批量导入
+    void batchInsert(List<SysUserExcelDto> cachedDataList);
 }

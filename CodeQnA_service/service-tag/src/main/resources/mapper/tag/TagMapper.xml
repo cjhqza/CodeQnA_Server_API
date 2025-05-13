@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.tag.mapper.TagMapper">
+    <sql id="columns">
+        parent_id,img,id,tag_name,tag_intro,create_time,update_time,is_deleted
+    </sql>
+
+    <select id="getTagBaseInfoListByIds" resultType="com.cjh.codeqna.model.vo.tag.TagBaseInfo">
+        SELECT id, tag_name
+        FROM dt_tag
+        WHERE id IN
+        <foreach item="tagId" collection="tagIds" separator="," open="(" close=")" index="">
+            #{tagId}
+        </foreach>
+        AND is_deleted = 0
+    </select>
+
+    <!--根据热门搜索（最多人关注排序）-->
+    <select id="getHotTagBaseInfoList" resultType="com.cjh.codeqna.model.entity.data.DtTag">
+        SELECT dt.id, dt.tag_name, dt.tag_intro, dt.img, dt.create_time, dt.update_time, dt.is_deleted
+        FROM dt_tag dt
+        LEFT JOIN dt_tag_records dtr
+        ON dt.id = dtr.tag_id
+        <where>
+            <if test="input != null and input != ''">
+                AND dt.tag_name LIKE CONCAT('%', #{input}, '%')
+            </if>
+            AND dt.is_deleted = 0
+        </where>
+        ORDER BY IFNULL(dtr.follow_count, 0) DESC
+    </select>
+
+    <!--根据篇数多搜索（问答贴数量+文章数量）-->
+    <select id="getMostTagBaseInfoList" resultType="com.cjh.codeqna.model.entity.data.DtTag">
+        SELECT dt.id, dt.tag_name, dt.tag_intro, dt.img, dt.create_time, dt.update_time, dt.is_deleted
+        FROM dt_tag dt
+        LEFT JOIN dt_knowledge_tag dkt
+        ON dt.id = dkt.tag_id
+        <where>
+            <if test="input != null and input != ''">
+                AND dt.tag_name LIKE CONCAT('%', #{input}, '%')
+            </if>
+            AND dt.is_deleted = 0
+        </where>
+        GROUP BY dt.id, dt.tag_name, dt.tag_intro, dt.img, dt.create_time, dt.update_time, dt.is_deleted
+        ORDER BY COUNT(dkt.id) DESC
+    </select>
+
+    <!--获取所有标签数据-->
+    <select id="getTagList" resultType="com.cjh.codeqna.model.entity.data.DtTag">
+        SELECT <include refid="columns" />
+        FROM dt_tag
+        WHERE is_deleted = 0
+    </select>
+</mapper>

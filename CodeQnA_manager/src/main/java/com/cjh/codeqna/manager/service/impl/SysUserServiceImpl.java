@@ -1,25 +1,35 @@
 package com.cjh.codeqna.manager.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.cjh.codeqna.common.exception.CodeQnAException;
+import com.cjh.codeqna.manager.listener.SysUserExcelListener;
 import com.cjh.codeqna.manager.mapper.SysRoleUserMapper;
 import com.cjh.codeqna.manager.mapper.SysUserMapper;
 import com.cjh.codeqna.manager.service.SysUserService;
 import com.cjh.codeqna.model.dto.system.AssignRoleDto;
 import com.cjh.codeqna.model.dto.system.LoginDto;
 import com.cjh.codeqna.model.dto.system.SysUserDto;
+import com.cjh.codeqna.model.dto.system.SysUserExcelDto;
 import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.cjh.codeqna.model.vo.system.LoginVo;
+import com.cjh.codeqna.model.vo.system.SysUserExcelVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -121,7 +131,7 @@ public class SysUserServiceImpl implements SysUserService {
         sysUser.setStatus(1);
         // 检查是否有头像地址，没有则设置默认头像地址
         if (StrUtil.isEmpty(sysUser.getAvatar())) {
-            sysUser.setAvatar("http://192.168.116.130:9001/codeqna-bucket/default/default_handsome.jpg");
+            sysUser.setAvatar("http://192.168.116.133:9001/codeqna-bucket/default/default_handsome.jpg");
         }
         // 将人员信息保存
         sysUserMapper.add(sysUser);
@@ -157,5 +167,51 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public SysUser getSysUserById(Long processorId) {
         return sysUserMapper.findById(processorId);
+    }
+
+    // 导入
+    @Override
+    public void importData(MultipartFile file) {
+        // 创建监听器
+        SysUserExcelListener sysUserExcelListener = new SysUserExcelListener(sysUserMapper);
+        try {
+            EasyExcel.read(file.getInputStream(), SysUserExcelDto.class, sysUserExcelListener).sheet().doRead();
+        } catch (IOException e) {
+            throw new CodeQnAException(ResultCodeEnum.DATA_ERROR);
+        }
+    }
+
+    // 导出
+    @Override
+    public void exportData(HttpServletResponse response) {
+        try {
+            // System.out.println("导出开始");
+
+            // 设置响应头信息
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("utf-8");
+            String fileName = URLEncoder.encode("管理员信息数据", "UTF-8");
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+
+            // 获取所有的sysUser数据的集合
+            List<SysUser> sysUserList = sysUserMapper.findAll();
+
+            List<SysUserExcelVo> sysUserExcelVoList = new ArrayList<>();
+            for(SysUser sysUser : sysUserList) {
+                SysUserExcelVo sysUserExcelVo = new SysUserExcelVo();
+                // 将sysUser值复制到sysUserExcelVo中
+                BeanUtils.copyProperties(sysUser, sysUserExcelVo);
+                sysUserExcelVoList.add(sysUserExcelVo);
+            }
+
+            // System.out.println(sysUserExcelVoList);
+
+            // 调用EasyExcel的write方法完成写操作
+            EasyExcel.write(response.getOutputStream(), SysUserExcelVo.class).sheet("管理员信息数据").doWrite(sysUserExcelVoList);
+
+            // System.out.println("完成了！！！！");
+        } catch (Exception e) {
+            throw new CodeQnAException(ResultCodeEnum.DATA_ERROR);
+        }
     }
 }

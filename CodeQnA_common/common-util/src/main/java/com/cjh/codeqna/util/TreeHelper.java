@@ -1,4 +1,4 @@
-package com.cjh.codeqna.manager.utils;
+package com.cjh.codeqna.util;
 
 import com.cjh.codeqna.model.entity.data.DtTag;
 import com.cjh.codeqna.model.entity.system.SysMenu;

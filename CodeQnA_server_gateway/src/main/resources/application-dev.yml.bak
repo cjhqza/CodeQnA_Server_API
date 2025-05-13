@@ -1,0 +1,29 @@
+server:
+  port: 8500  # 端口号
+spring:
+  application:
+    name: CodeQnA_server_gateway  # 应用名称
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.116.136:8848 # Nacos地址
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开启服务发现
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedHeaders: "*" # 允许请求中携带的头信息
+            allowedMethods: "*" # 运行跨域的请求方式
+            maxAge: 600 # 跨域检测的有效期,单位s
+      routes:
+        - id: service-user  # 路由id
+          uri: lb://service-user  # 路由地址
+          predicates:
+            - Path=/*/user/** #  匹配的路径
+  data:
+    redis:
+      host: 192.168.116.136
+      port: 6379

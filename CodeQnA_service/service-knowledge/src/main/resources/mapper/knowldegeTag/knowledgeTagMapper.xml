@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.knowledge.mapper.KnowledgeTagMapper">
+    <!--获取问答贴对应标签号集合-->
+    <select id="getTagIdsByKnowledgeId" resultType="java.lang.Long">
+        SELECT tag_id
+        FROM dt_knowledge_tag
+        WHERE knowledge_id = #{id}
+        AND is_deleted = 0
+    </select>
+
+    <!--删除已有对应知识id的数据-->
+    <update id="deleteByKnowledgeId">
+        UPDATE dt_knowledge_tag
+        SET is_deleted = 1
+        WHERE knowledge_id = #{knowledgeId}
+        AND is_deleted = 0
+    </update>
+
+    <!--插入新的知识标签数据-->
+    <insert id="saveKnowledgeTag">
+        INSERT INTO dt_knowledge_tag(knowledge_id, tag_id)
+        VALUES
+        <foreach collection="tagIds" item="tagId" separator=",">
+            (#{knowledgeId}, #{tagId})
+        </foreach>
+    </insert>
+</mapper>

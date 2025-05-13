@@ -15,7 +15,7 @@ import java.util.List;
 @Schema(description = "数据知识信息实体类")
 public class DtKnowledge extends BaseEntity {
     @Schema(description = "知识类型(0：问答贴 1：文章)")
-    private int type;
+    private Integer type;
     @Schema(description = "创作作者id")
     private Long userId;
     @Schema(description = "标题")

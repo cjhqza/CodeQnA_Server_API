@@ -100,4 +100,42 @@
         FROM sys_user
         WHERE id = #{processorId}
     </select>
+
+    <!--获取所有的sysUser数据的集合-->
+    <select id="findAll" resultType="com.cjh.codeqna.model.entity.system.SysUser">
+        SELECT <include refid="columns" />
+        FROM sys_user
+        WHERE is_deleted = 0
+        ORDER BY id
+    </select>
+
+    <!--批量导入-->
+    <insert id="batchInsert">
+        INSERT INTO sys_user (
+            username,
+            password,
+            name,
+            phone,
+            avatar,
+            description,
+            status,
+            create_time,
+            update_time,
+            is_deleted
+        ) VALUES
+        <foreach collection="cachedDataList" item="item" separator=",">
+            (
+                #{item.userName},
+                #{item.password},
+                #{item.name},
+                #{item.phone},
+                #{item.avatar},
+                #{item.description},
+                #{item.status},
+                NOW(),
+                NOW(),
+                0
+            )
+        </foreach>
+    </insert>
 </mapper>

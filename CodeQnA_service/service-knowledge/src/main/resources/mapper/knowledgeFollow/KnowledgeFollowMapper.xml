@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.knowledge.mapper.KnowledgeFollowMapper">
+
+    <!--判断当前用户是否有关注该知识信息-->
+    <select id="findByUserIdAndKnowledgeId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM dt_knowledge_follow
+        WHERE user_id = #{userId}
+        AND knowledge_id = #{knowledgeId}
+        AND is_deleted = 0
+    </select>
+
+    <!--执行取消关注/收藏操作-->
+    <update id="cancelFollow">
+        UPDATE dt_knowledge_follow
+        SET is_deleted = 1
+        WHERE user_id = #{userId}
+        AND knowledge_id = #{knowledgeId}
+        AND is_deleted = 0
+    </update>
+
+    <!--执行关注/收藏操作-->
+    <insert id="follow">
+        INSERT INTO dt_knowledge_follow(
+            user_id,
+            knowledge_id
+        ) VALUES (
+            #{userId},
+            #{knowledgeId}
+        )
+    </insert>
+</mapper>

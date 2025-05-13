@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.116.138:8848 # Nacos地址
+  config:
+    import:
+      - nacos:service-knowledge-dev.yml?group=CODEQNA_GROUP # 引入nacos配置
+      - nacos:common-service-config.yml?group=CODEQNA_CONFIG_GROUP # 引入nacos公共配置

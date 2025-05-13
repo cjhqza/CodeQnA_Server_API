@@ -12,6 +12,9 @@
         <module>CodeQnA_common</module>
         <module>CodeQnA_manager</module>
         <module>CodeQnA_model</module>
+        <module>CodeQnA_service</module>
+        <module>CodeQnA_server_gateway</module>
+        <module>CodeQnA_service_client</module>
     </modules>
 
     <properties>
@@ -22,6 +25,9 @@
         <fastjson.version>2.0.21</fastjson.version>
         <lombok.version>1.18.20</lombok.version>
         <mybatis.version>3.0.1</mybatis.version>
+
+        <cloud.version>2022.0.2</cloud.version>
+        <alibaba.version>2022.0.0.0-RC2</alibaba.version>
     </properties>
 
     <!-- 指定父工程 -->
@@ -60,6 +66,21 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

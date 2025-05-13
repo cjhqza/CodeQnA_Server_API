@@ -9,9 +9,11 @@ import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.common.Result;
 import com.cjh.codeqna.model.vo.common.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
+import jakarta.servlet.http.HttpServletResponse;
 import org.simpleframework.xml.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Author: cjh
@@ -74,5 +76,20 @@ public class SysUserController {
     public Result getSysUserById(@PathVariable("processorId") Long processorId) {
         SysUser sysUser = sysUserService.getSysUserById(processorId);
         return Result.build(sysUser, ResultCodeEnum.SUCCESS);
+    }
+
+    // 导入
+    @Log(title = "人员管理:信息导入", businessType = 0, operatorType = OperatorType.MANAGE)
+    @PostMapping(value = "/importData")
+    public Result importData(MultipartFile file) {
+        sysUserService.importData(file);
+        return Result.build(null, ResultCodeEnum.SUCCESS);
+    }
+
+    // 导出
+    @Log(title = "人员管理:信息导出", businessType = 0, operatorType = OperatorType.MANAGE)
+    @GetMapping(value = "/exportData")
+    public void exportData(HttpServletResponse response) {
+        sysUserService.exportData(response);
     }
 }

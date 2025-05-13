@@ -8,10 +8,22 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="common-util" />
-        <module name="common-log" />
         <module name="common-service" />
+        <module name="CodeQnA_server_gateway" />
         <module name="CodeQnA_manager" />
+        <module name="service-knowledge" />
+        <module name="service-report" />
+        <module name="service-user-client" />
+        <module name="service-knowledge-client" />
+        <module name="service-comment-client" />
+        <module name="common-log" />
         <module name="CodeQnA_model" />
+        <module name="service-user" />
+        <module name="service-upload" />
+        <module name="service-comment" />
+        <module name="service-chat" />
+        <module name="service-tag-client" />
+        <module name="service-tag" />
       </profile>
     </annotationProcessing>
   </component>
@@ -19,9 +31,23 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="CodeQnA_manager" options="-parameters" />
       <module name="CodeQnA_model" options="-parameters" />
+      <module name="CodeQnA_server_gateway" options="-parameters" />
+      <module name="CodeQnA_service" options="" />
+      <module name="CodeQnA_service_client" options="" />
       <module name="common-log" options="-parameters" />
       <module name="common-service" options="-parameters" />
       <module name="common-util" options="-parameters" />
+      <module name="service-chat" options="-parameters" />
+      <module name="service-comment" options="-parameters" />
+      <module name="service-comment-client" options="-parameters" />
+      <module name="service-knowledge" options="-parameters" />
+      <module name="service-knowledge-client" options="-parameters" />
+      <module name="service-report" options="-parameters" />
+      <module name="service-tag" options="-parameters" />
+      <module name="service-tag-client" options="-parameters" />
+      <module name="service-upload" options="-parameters" />
+      <module name="service-user" options="-parameters" />
+      <module name="service-user-client" options="-parameters" />
     </option>
   </component>
 </project>

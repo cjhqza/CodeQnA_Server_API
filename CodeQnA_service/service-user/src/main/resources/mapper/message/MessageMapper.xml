@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.user.mapper.MessageMapper">
+    <!--创建会话-->
+    <insert id="createChat" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO dt_chat(
+            user1_id,
+            user2_id,
+            last_message,
+            last_message_time,
+            create_time,
+            update_time,
+            is_delete
+        ) VALUES (
+            #{senderId},
+            #{receiverId},
+            #{content},
+            NOW(),
+            NOW(),
+            NOW(),
+            0
+        )
+    </insert>
+
+    <!--更新会话信息-->
+    <update id="updateChat">
+        UPDATE dt_chat
+        SET
+            last_message = #{content},
+            last_message_time = NOW(),
+            update_time = NOW()
+        WHERE id = #{id}
+        AND is_deleted = 0
+    </update>
+
+    <!--新增消息-->
+    <insert id="storeMessage">
+        INSERT INTO dt_message(
+            sender_id,
+            chat_id,
+            content,
+            create_time,
+            update_time,
+            is_deleted
+        ) VALUES (
+            #{senderId},
+            #{id},
+            #{content},
+            NOW(),
+            NOW(),
+            0
+        )
+    </insert>
+
+    <!--获取会话信息-->
+    <select id="getChatInfo" resultType="com.cjh.codeqna.model.vo.chat.ChatInfo">
+        SELECT dc.id, du.id AS toUserId, du.username AS toUserName, du.head_img_url AS toHeadImgUrl
+        FROM dt_chat dc
+        INNER JOIN dt_user du
+        ON (dc.user1_id = du.id AND dc.user2_id = #{userId})
+        OR (dc.user1_id = #{userId} AND dc.user2_id = du.id)
+        WHERE dc.user1_id = #{userId} OR dc.user2_id = #{userId}
+        AND dc.is_deleted = 0
+    </select>
+
+    <!--根据会话id获取消息集合-->
+    <select id="getMessageList" resultType="com.cjh.codeqna.model.entity.data.DtMessage">
+        SELECT id,sender_id,chat_id,content,create_time,update_time,is_deleted
+        FROM dt_message
+        WHERE chat_id = #{id}
+        AND is_deleted = 0
+    </select>
+</mapper>

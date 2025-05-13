@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.knowledge.mapper.ArticleInfoMapper">
+    <sql id="columns">
+        id,type,user_id,title,content,status,create_time,update_time,is_deleted
+    </sql>
+
+    <!--获取赞赏数高的文章信息的集合-->
+    <select id="getAppreciateArticleInfoList" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT dk.id,dk.type,dk.user_id,dk.title,dk.content,dk.status,dk.create_time,dk.update_time,dk.is_deleted
+        FROM dt_knowledge dk
+        LEFT JOIN dt_knowledge_records dkr
+        ON dk.id = dkr.knowledge_id
+        WHERE dk.type = 1
+        AND dk.status = 1
+        AND dk.is_deleted = 0
+        ORDER BY IFNULL(dkr.appreciate_count, 0) DESC
+        LIMIT 10
+    </select>
+
+    <!--根据用户感兴趣标签集合获取文章集合-->
+    <select id="getRelatedArticleInfoList" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT dk.id,dk.type,dk.user_id,dk.title,dk.content,dk.status,dk.create_time,dk.update_time,dk.is_deleted
+        FROM dt_knowledge dk
+        INNER JOIN dt_knowledge_tag dkt
+        ON dk.id = dkt.knowledge_id
+        WHERE dkt.tag_id IN
+        <foreach item="tagId" collection="tagIds" separator="," open="(" close=")" index="">
+            #{tagId}
+        </foreach>
+        AND dk.type = 1
+        AND dk.status = 1
+        AND dk.is_deleted = 0
+        GROUP BY dk.id
+        LIMIT 10
+    </select>
+</mapper>

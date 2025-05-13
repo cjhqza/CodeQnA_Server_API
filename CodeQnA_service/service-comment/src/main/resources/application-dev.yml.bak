@@ -1,0 +1,37 @@
+# 配置服务端口号
+server:
+  port: 8506
+spring:
+  application:
+    name: service-comment
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.116.136:8848
+  # 配置数据库连接信息
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # jdbc:mysql://[ip地址]:[端口号]/[table名称]?...
+    url: jdbc:mysql://192.168.116.136:3306/db_codeqna?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: root  # mysql登录用户名
+    password: 1234  # mysql登录密码
+  # Redis的相关配置
+  data:
+    redis:
+      host: 192.168.116.136 # redis服务的ip地址
+      port: 6379  # redis服务的端口号
+  #  时区设置
+  jackson:
+    time-zone: Asia/Shanghai
+
+# mybatis的配置
+mybatis:
+  config-location: classpath:/mybatis-config.xml
+  mapper-locations: classpath:/mapper/*/*.xml
+
+  minio:
+    endpointUrl: http://192.168.116.136:9001
+    accessKey: minioadmin
+    secreKey: minioadmin
+    bucketName: codeqna-bucket

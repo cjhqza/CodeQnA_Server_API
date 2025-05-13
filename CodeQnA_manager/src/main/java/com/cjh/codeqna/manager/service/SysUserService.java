@@ -6,6 +6,8 @@ import com.cjh.codeqna.model.dto.system.SysUserDto;
 import com.cjh.codeqna.model.entity.system.SysUser;
 import com.cjh.codeqna.model.vo.system.LoginVo;
 import com.github.pagehelper.PageInfo;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Author: cjh
@@ -39,4 +41,10 @@ public interface SysUserService {
 
     // 人员查找
     SysUser getSysUserById(Long processorId);
+
+    // 导入
+    void importData(MultipartFile file);
+
+    // 导出
+    void exportData(HttpServletResponse response);
 }

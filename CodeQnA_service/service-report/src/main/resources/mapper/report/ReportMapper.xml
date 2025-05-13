@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.report.mapper.ReportMapper">
+    <!--提交举报-->
+    <insert id="submitReport">
+        INSERT INTO aprv_report(target_type, target_id, reporter_id, report_reason)
+        VALUES (#{targetType}, #{targetId}, #{reporterId}, #{reportReason})
+    </insert>
+
+    <!--获取举报回执-->
+    <select id="getReportReceipt" resultType="com.cjh.codeqna.model.vo.approval.SimpleReportVo">
+        SELECT arp.id, ar.report_reason, arp.feedback, arp.process_time
+        FROM aprv_report ar
+        INNER JOIN aprv_report_process arp
+        ON ar.id = arp.report_id
+        WHERE ar.reporter_id = #{userId}
+        AND is_deleted = 0
+    </select>
+
+    <!--上传建议信-->
+    <insert id="submitSuggestion">
+        INSERT INTO aprv_suggestion(user_id, content, title)
+        VALUES(#{userId}, #{content}, #{title})
+    </insert>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.tag.mapper.UserTagMapper">
+    <!--远程调用：根据用户id获取标签id集合-->
+    <select id="getTagIdsByUserId" resultType="java.lang.Long">
+        SELECT tag_id
+        FROM dt_user_tag
+        WHERE user_id = #{userId}
+        AND is_deleted = 0
+    </select>
+
+    <!--判断当前用户是否关注该标签-->
+    <select id="findByUserIdAndTagId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM dt_user_tag
+        WHERE user_id = #{userId}
+        AND tag_id = #{tagId}
+        AND is_deleted = 0
+    </select>
+
+    <!--执行取消关注操作-->
+    <update id="cancelFollow">
+        UPDATE dt_user_tag
+        SET is_deleted = 1
+        WHERE user_id = #{userId}
+        AND tag_id = #{tagId}
+        AND is_deleted = 0
+    </update>
+
+    <!--执行关注操作-->
+    <insert id="follow">
+        INSERT INTO dt_user_tag(
+            user_id,
+            tag_id
+        ) VALUES (
+            #{userId},
+            #{tagId}
+        )
+    </insert>
+</mapper>

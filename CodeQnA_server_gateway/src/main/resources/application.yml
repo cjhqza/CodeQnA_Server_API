@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    nacos:
+      server-addr: 192.168.116.138:8848
+      group: CODEQNA_GROUP
+  config:
+    import:
+      - nacos:server-gateway-dev.yml

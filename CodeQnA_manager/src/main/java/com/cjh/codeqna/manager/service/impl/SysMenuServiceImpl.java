@@ -4,7 +4,7 @@ import com.cjh.codeqna.common.exception.CodeQnAException;
 import com.cjh.codeqna.manager.mapper.SysMenuMapper;
 import com.cjh.codeqna.manager.mapper.SysMenuRoleMapper;
 import com.cjh.codeqna.manager.service.SysMenuService;
-import com.cjh.codeqna.manager.utils.TreeHelper;
+import com.cjh.codeqna.util.TreeHelper;
 import com.cjh.codeqna.model.dto.system.AssignMenuDto;
 import com.cjh.codeqna.model.entity.system.SysMenu;
 import com.cjh.codeqna.model.entity.system.SysUser;

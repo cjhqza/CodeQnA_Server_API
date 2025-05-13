@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: service-knowledge
+  profiles:
+    active: dev

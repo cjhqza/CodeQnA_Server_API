@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cjh.codeqna.knowledge.mapper.KnowledgeInfoMapper">
+    <sql id="columns">
+        id,type,user_id,title,content,status,create_time,update_time,is_deleted
+    </sql>
+
+    <!--远程调用：根据标签id获取对应的问答贴数量-->
+    <select id="getPostNumByTagId" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM dt_knowledge_tag dkt
+        INNER JOIN dt_knowledge dk
+        ON dkt.knowledge_id = dk.id
+        WHERE dkt.tag_id = #{tagId}
+        AND dk.type = 0
+        AND dk.status = 1
+        AND dk.is_deleted = 0
+    </select>
+
+    <!--远程调用：根据标签id获取对应的文章数量-->
+    <select id="getArticleNumByTagId" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM dt_knowledge_tag dkt
+        INNER JOIN dt_knowledge dk
+        ON dkt.knowledge_id = dk.id
+        WHERE dkt.tag_id = #{tagId}
+        AND dk.type = 1
+        AND dk.status = 1
+        AND dk.is_deleted = 0
+    </select>
+
+    <!--按照最近时间获取知识信息-->
+    <select id="getKnowledgeInfoListForLatest" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT dk.id, dk.type, dk.user_id, dk.title, dk.content, dk.status, dk.create_time, dk.update_time, dk.is_deleted
+        FROM dt_knowledge dk
+        <where>
+            <if test="input != null and input != ''">
+                AND dk.title LIKE CONCAT('%', #{input}, '%')
+            </if>
+            <if test="type != null and type != 2">
+                AND dk.type = #{type}
+            </if>
+            <if test="tagIds != null and size > 0">
+                AND dk.id IN (
+                    SELECT dkt.knowledge_id
+                    FROM dt_knowledge_tag dkt
+                    WHERE dkt.tag_id IN
+                    <foreach collection="tagIds" item="tagId" separator="," open="(" close=")" index="">
+                        #{tagId}
+                    </foreach>
+                    AND dkt.is_deleted = 0
+                    GROUP BY dkt.knowledge_id
+                    HAVING COUNT(dkt.tag_id) = #{size}
+                )
+            </if>
+            AND dk.status = 1
+            AND dk.is_deleted = 0
+        </where>
+        ORDER BY dk.create_time DESC
+    </select>
+
+    <!--按阅读数(热门的)获取知识信息-->
+    <select id="getKnowledgeInfoListForPopular" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT dk.id, dk.type, dk.user_id, dk.title, dk.content, dk.status, dk.create_time, dk.update_time, dk.is_deleted
+        FROM dt_knowledge dk
+        LEFT JOIN dt_knowledge_records dkr
+        ON dk.id = dkr.knowledge_id
+        AND dkr.is_deleted = 0
+        <where>
+            <if test="input != null and input != ''">
+                AND dk.title LIKE CONCAT('%', #{input}, '%')
+            </if>
+            <if test="type != null and type != 2">
+                AND dk.type = #{type}
+            </if>
+            <if test="tagIds != null and size > 0">
+                AND dk.id IN (
+                SELECT dkt.knowledge_id
+                FROM dt_knowledge_tag dkt
+                WHERE dkt.tag_id IN
+                <foreach collection="tagIds" item="tagId" separator="," open="(" close=")" index="">
+                    #{tagId}
+                </foreach>
+                AND dkt.is_deleted = 0
+                GROUP BY dkt.knowledge_id
+                HAVING COUNT(dkt.tag_id) = #{size}
+                )
+            </if>
+            AND dk.status = 1
+            AND dk.is_deleted = 0
+        </where>
+        ORDER BY IFNULL(dkr.read_count, 0) DESC
+    </select>
+
+    <!--按赞赏数（质量）获取知识信息-->
+    <select id="getKnowledgeInfoListForQuality" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT dk.id, dk.type, dk.user_id, dk.title, dk.content, dk.status, dk.create_time, dk.update_time, dk.is_deleted
+        FROM dt_knowledge dk
+        LEFT JOIN dt_knowledge_records dkr
+        ON dk.id = dkr.knowledge_id
+        AND dkr.is_deleted = 0
+        <where>
+            <if test="input != null and input != ''">
+                AND dk.title LIKE CONCAT('%', #{input}, '%')
+            </if>
+            <if test="type != null and type != 2">
+                AND dk.type = #{type}
+            </if>
+            <if test="tagIds != null and size > 0">
+                AND dk.id IN (
+                    SELECT dkt.knowledge_id
+                    FROM dt_knowledge_tag dkt
+                    WHERE dkt.tag_id IN
+                    <foreach collection="tagIds" item="tagId" separator="," open="(" close=")" index="">
+                        #{tagId}
+                    </foreach>
+                    AND dkt.is_deleted = 0
+                    GROUP BY dkt.knowledge_id
+                    HAVING COUNT(dkt.tag_id) = #{size}
+                )
+            </if>
+            AND dk.status = 1
+            AND dk.is_deleted = 0
+        </where>
+        ORDER BY IFNULL(dkr.appreciate_count, 0) DESC
+    </select>
+
+    <!--按关注数（收藏）获取知识信息-->
+    <select id="getKnowledgeInfoListForFollow" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT dk.id, dk.type, dk.user_id, dk.title, dk.content, dk.status, dk.create_time, dk.update_time, dk.is_deleted
+        FROM dt_knowledge dk
+        LEFT JOIN dt_knowledge_records dkr
+        ON dk.id = dkr.knowledge_id
+        AND dkr.is_deleted = 0
+        <where>
+            <if test="input != null and input != ''">
+                AND dk.title LIKE CONCAT('%', #{input}, '%')
+            </if>
+            <if test="type != null and type != 2">
+                AND dk.type = #{type}
+            </if>
+            <if test="tagIds != null and size > 0">
+                AND dk.id IN (
+                    SELECT dkt.knowledge_id
+                    FROM dt_knowledge_tag dkt
+                    WHERE dkt.tag_id IN
+                    <foreach collection="tagIds" item="tagId" separator="," open="(" close=")" index="">
+                        #{tagId}
+                    </foreach>
+                    AND dkt.is_deleted = 0
+                    GROUP BY dkt.knowledge_id
+                )
+            </if>
+            AND dk.status = 1
+            AND dk.is_deleted = 0
+        </where>
+        ORDER BY IFNULL(dkr.follow_count, 0) DESC
+    </select>
+
+    <!--根据知识id获取知识信息-->
+    <select id="getKnowledgeInfoById" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT <include refid="columns" />
+        FROM dt_knowledge
+        WHERE id = #{knowledgeId}
+        AND is_deleted = 0
+    </select>
+
+    <!--远程调用：根据用户id获取总的点赞数-->
+    <select id="getAppreciateCountByUserId" resultType="java.lang.Long">
+        SELECT
+            COALESCE(SUM(dkr.appreciate_count), 0) AS appreciateCount
+        FROM dt_knowledge dk
+        JOIN dt_knowledge_records dkr ON dk.id = dkr.knowledge_id AND dkr.is_deleted = 0
+        WHERE dk.user_id = #{userId}
+        AND dk.is_deleted = 0
+        AND dk.status = 1
+    </select>
+
+    <!--获取用户发布的类型为type的知识数据-->
+    <select id="getKnowledgeListByUserIdByRelease" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT <include refid="columns" />
+        FROM dt_knowledge
+        <where>
+            <if test="type != null and type != 2">
+                AND type = #{type}
+            </if>
+            AND user_id = #{userId}
+            AND is_deleted = 0
+            AND status = 1
+        </where>
+    </select>
+
+    <!--根据用户id获去对应赞赏过的知识信息集合-->
+    <select id="getKnowledgeListByUserIdByAppreciate" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT dk.id, dk.user_id, dk.title, dk.content, dk.create_time, dk.update_time, dk.status, dk.is_deleted, dk.type
+        FROM dt_knowledge dk
+        INNER JOIN dt_knowledge_appreciate dka
+        ON dk.id = dka.knowledge_id
+        AND dka.user_id = #{userId}
+        AND dka.is_deleted = 0
+        <where>
+            <if test="type != null and type != 2">
+                AND dk.type = #{type}
+            </if>
+            AND dk.is_deleted = 0
+            AND dk.status = 1
+        </where>
+    </select>
+
+    <!--根据用户id获取关注/收藏的知识信息集合-->
+    <select id="getKnowledgeInfoListByUserIdByFollow" resultType="com.cjh.codeqna.model.entity.data.DtKnowledge">
+        SELECT dk.id, dk.title, dk.user_id, dk.create_time, dk.update_time, dk.content, dk.status, dk.is_deleted, dk.type
+        FROM dt_knowledge dk
+        INNER JOIN dt_knowledge_follow dkf
+        ON dk.id = dkf.knowledge_id
+        AND dkf.is_deleted = 0
+        AND dkf.user_id = #{userId}
+        <where>
+            <if test="type != null and type != 2">
+                AND dk.type = #{type}
+            </if>
+            AND dk.is_deleted = 0
+            AND dk.status = 1
+        </where>
+    </select>
+
+    <!--撤贴-->
+    <update id="cancelKnowledge">
+        UPDATE dt_knowledge
+        SET status = -1
+        WHERE id = #{knowledgeId}
+        AND is_deleted = 0
+    </update>
+</mapper>
